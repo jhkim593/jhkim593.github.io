@@ -37,6 +37,7 @@ JPA가 제공하는 낙관적 락은 버전(@Version)을 사용합니다. 따라
   - Long
   - java.sql.Timestamp
 
+
   <br>
 
 
