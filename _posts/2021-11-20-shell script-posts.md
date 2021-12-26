@@ -66,6 +66,14 @@ while [ ${count} -le 5]; do
 	count=$(( ${count}+1 ))
 done
 
+#while 파일 값 읽기
+#serverlist 값을 차례로 읽어서 SVR대입
+while read SVR
+do
+        echo ${SVR}
+done < serverlist
+
+
 #수행 조건이 false 일때 실행됨
 count2=10
 until [ ${count2} -le 5 ]; do
@@ -119,11 +127,12 @@ string5="hello4"
 string6="hello4"
 
 
-if [ ${string1} == ${string2}]; then
+  # 대괄호는 test 명령어를 의미하므로 공백이 필
+if [ ${string1} == ${string2} ]; then
 	#실행 문장 없으면 오류
 	echo "hello1"
 
-elif [${string1} == ${string3}] then
+elif [${string1} == ${string3} ] then
 	echo "hello2"
 
 fi
@@ -139,6 +148,25 @@ fi
 - && : 좌측 명령 /테스트의 결과가 참이면 우측 명령을 실행
 - || : 좌측 명령 /테스트의 결과가 거짓이면 우측 명령 실행 (이미 참이기 때문에 실행 할 필요 없음)
 - [] : test 명령어를 의미하며 괄호 다음 공백이 반드시 필요하다.
+
+###조건문 (case)
+~~~shell
+CMD=$1
+
+case "${CMD}" in
+
+start)
+        echo start;;
+stop)
+        echo stop;;
+rerolad)
+        echo reload;;
+
+*)
+        echo etc;;
+esac
+
+~~~
 
 
 
@@ -199,7 +227,7 @@ else
   echo "web application proceess killed forcefully. (pid: $pid)"
 fi
 
-nohup java -jar snapshot.jar
+nohup java -jar snapshot.jar &
 
 ~~~
 
