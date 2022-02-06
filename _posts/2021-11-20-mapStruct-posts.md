@@ -428,7 +428,7 @@ public interface TestMapper {
 		Person PERSON_MAPPER=Mappers.getMapper(PersonMapper.class);
 
     @Mappings({
-						@Mapping(target = "items", expression = "java(testDto.getItemIds() == null ? null : testDto.getItemIds().stream().map(v -> new  Item(v)).collect(Collectors.toSet()))"),   
+					@Mapping(target = "items", expression = "java(testDto.getItemIds() == null ? null : testDto.getItemIds().stream().map(v -> new  		 Item(v)).collect(Collectors.toSet()))"),   
 						@Mapping(target= "person" , ignore="true")  
     })
     Test testDtoToTest(TestDto testDto , @Context CycleAvoidingMappingContext context);  //1
