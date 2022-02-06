@@ -372,7 +372,7 @@ public class TestDto {
     private  name;
 
 		private List<Long>itemIds;
-		
+
 		private Set<PersonDto>personDtos;
 
 
@@ -391,11 +391,29 @@ public class Test {
     @OneToMany(mappedBy = "test")
     Set<Item> items=new HashSet<>();
 
-		@ManyToOne
-		@JoinColumn(name = "person_id")
-		Person person;
+    @ManyToOne
+    @JoinColumn(name = "person_id")
+    Person person;
 
 }
+~~~
+
+~~~java
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderDto {
+
+    @Id
+		@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToMany(mappedBy = "test")
+    private String orderId;
+
+}
+
 ~~~
 
 ~~~java
