@@ -10,6 +10,7 @@ tags: Linux
 ### 함수 (function)
 - function 생략가능
 - 호출 코드가 함수 코드보다 반드시 뒤에 있어야함.
+
 ~~~shell
 string_test(){
 	echo "String test"
