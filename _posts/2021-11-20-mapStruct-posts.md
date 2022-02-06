@@ -440,7 +440,7 @@ public interface TestMapper {
 
 	  void updateUserFromUserDto(TestDto userDto, @MappingTarget Test test);
 
-		2
+	
 }
 ~~~
 1.변환시 무한 참조를 방지할 수 있다??
