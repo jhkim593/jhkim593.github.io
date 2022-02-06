@@ -359,6 +359,7 @@ public class MappingTest {
 ~~~
 다음과 같이 Test code 작성시 모두 success 되는 것을 확인 할수 있습니다.
 <br>
+
 ###ADD
 
 ~~~java
@@ -371,7 +372,7 @@ public class TestDto {
     private  name;
 
 		private List<Long>itemIds;
-
+		
 		private Set<PersonDto>personDtos;
 
 
