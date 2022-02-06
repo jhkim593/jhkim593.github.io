@@ -371,9 +371,9 @@ public class TestDto {
 
     private  name;
 
-		private List<Long>itemIds;
+    private List<Long>itemIds;
 
-		private Set<PersonDto>personDtos;
+    private Set<PersonDto>personDtos;
 
 
 }
@@ -401,38 +401,19 @@ public class Test {
 ~~~java
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class OrderDto {
-
-    @Id
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToMany(mappedBy = "test")
-    private String orderId;
-
-}
-
-~~~
-
-~~~java
-@Getter
-@Setter
 @Entity
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-		@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "test_id")
     Test test;
 
-		public Item(Long itemId){
-			this.id=itemId;
-		}
-
+    public Item(Long itemId){
+        this.id=itemId;
+    }
 }
 ~~~
 
@@ -443,21 +424,21 @@ public class Item {
 @Mapper
 public interface TestMapper {
 
-    Test MAPPER = Mappers.getMapper(TestMapper.class);  
-		Person PERSON_MAPPER=Mappers.getMapper(PersonMapper.class);
+    Test MAPPER = Mappers.getMapper(TestMapper.class);
+    Person PERSON_MAPPER=Mappers.getMapper(PersonMapper.class);
 
     @Mappings({
-						@Mapping(target = "items", expression = "java(testDto.getItemIds() == null ? null : testDto.getItemIds().stream().map(v -> new  Item(v)).collect(Collectors.toSet()))"),   
-						@Mapping(target= "person" , ignore="true")  
+            @Mapping(target = "items", expression = "java(testDto.getItemIds() == null ? null : testDto.getItemIds().stream().map(v -> new  Item(v)).collect(Collectors.toSet()))"),
+            @Mapping(target= "person" , ignore="true")
     })
     Test testDtoToTest(TestDto testDto , @Context CycleAvoidingMappingContext context);  //1
 
-		@Mappings({
-						@Mapping(target = "items", expression = "java(test.getPerson() == null ? null : PERSON_MAPPER.personToPersonDto(test.getPerson())") //2
-		})
-		TestDto testToTestDto(Test test);
+    @Mappings({
+            @Mapping(target = "items", expression = "java(test.getPerson() == null ? null : PERSON_MAPPER.personToPersonDto(test.getPerson())") //2
+    })
+    TestDto testToTestDto(Test test);
 
-	  void updateUserFromUserDto(TestDto userDto, @MappingTarget Test test);
+    void updateUserFromUserDto(TestDto userDto, @MappingTarget Test test);
 
 
 }
