@@ -196,6 +196,9 @@ public interface DataMapper extends GenericMapper<DataDto, DataEntity> {
 <br>
 
 <img src="https://user-images.githubusercontent.com/53510936/142766525-0b8fc51a-11fc-40e2-a106-6d49092d6bd7.png"  width="600" height="240"/>
+
+<br>
+
 ~~~java
 public class PersonMapperImpl implements PersonMapper {
     public PersonMapperImpl() {
@@ -288,6 +291,7 @@ public class PersonMapperImpl implements PersonMapper {
 ~~~
 
 <br>
+<br>
 
 ### Test
 
@@ -360,7 +364,7 @@ public class MappingTest {
 다음과 같이 Test code 작성시 모두 success 되는 것을 확인 할수 있습니다.
 <br>
 
-###ADD
+### ADD
 
 ~~~java
 @Getter
