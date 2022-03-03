@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "shell script(1)"
+title: "Shell script(1)"
 author: "jhkim593"
 tags: Linux
 
