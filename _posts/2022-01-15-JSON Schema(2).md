@@ -484,3 +484,12 @@ ever-it 라이이브러리 사용시 다른 스키마를 참조하기 위해 cla
 - 결과
 <img src="https://user-images.githubusercontent.com/53510936/157264606-685c235d-9b55-44c0-81d6-a1961b08331b.png"  width="800" height="300"/>
 위와 같은 결과가 나오며 다른 스키마를 참조해 유효성 검증이 동작 하는 것을 확인했습니다.
+
+---
+<br>
+
+# Reference
+
+<br>
+
+관련 github링크 : [https://github.com/jhkim593/JSON-Schema-ever-it](https://github.com/jhkim593/JSON-Schema-ever-it)
