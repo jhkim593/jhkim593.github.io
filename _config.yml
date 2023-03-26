@@ -14,7 +14,11 @@ author:
   email:        fpdlwjzlr@naver.com
 
 # Build settings
-markdown:       kramdown
+markdown: kramdown
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
 include:
   - _pages
 
