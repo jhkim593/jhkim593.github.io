@@ -5,22 +5,22 @@ author: "jhkim593"
 tags: Spring
 
 ---
-Spring에서 트랜잭션 처리를 위해 제공해주는 @Transactional 어노테이션을 프로젝트를 진행하면서 자주 사용하는데 사용하다 보면 예상과 다르게 동작하는 부분이 많았습니다. 그래서 이번장에서는 @Transactional이 어떻게 동작하는지 자세하게 확인해보도록 하겠습니다.
+Spring에서 트랜잭션 처리를 위해 제공해주는 @Transactional을 프로젝트 진행하면서 자주 사용하는데 사용하다 보면 예상과 다르게 동작하는 부분이 많았습니다. 그래서 이번장에서는 @Transactional의 동작 원리에 대해 자세하게 확인해보도록 하겠습니다.
 
->관련 코드는 [github](https://github.com/jhkim593/blog_code/tree/master/jpa_entity_query)를 참고해주세요
+>관련 코드는 [github](https://github.com/jhkim593/blog_code/tree/master/spring_transactional)를 참고해주세요
 
 ## @Transactional 이란?
-비즈니스 로직이 트랜잭션 처리를 필요로 할 때 트랜잭션 처리 코드가 비즈니스 코드와 같이 섞여있다면 코드 중복이 발생하고 비즈니스 핵심 로직에 집중하기 힘들어 질수 있습니다. 부가 기능인 트랜잭션 처리 분리를 위해 Spring에서는 **@Transactional** 어노테이션을 제공하는데 큰 설정없이 해당 어노테이션을 명시해주기만 하면 AOP를 통해 내부적으로 트랜잭션 코드가 수행됩니다.
+비즈니스 로직이 트랜잭션 처리를 필요로 할 때 트랜잭션 처리 코드가 비즈니스 코드와 같이 섞여있다면 코드 중복이 발생하고 비즈니스 핵심 로직에 집중하기 힘들어 질수 있습니다. 부가 기능인 트랜잭션 처리 기능 분리를 위해 Spring에서는 **@Transactional** 어노테이션을 제공하는데 큰 설정없이 해당 어노테이션을 명시해주기만 하면 AOP를 통해 내부적으로 트랜잭션 코드가 수행됩니다.
 <br>
-<br>
+
 클래스 , 메소드단 모두 @Transactional 선언이 가능하며 메소드 레벨의 @Transactional이 우선 순위를 갖습니다.
 
 <br>
 ## @Transactional은 내부적으로 프록시 객체를 통해 동작한다.
+동작 원리를 확인하기 위해
+예시로 Item Entity와 Item 생성을 위한 서비스 클래스를 생성했습니다.
 
-예시로 Item Entity가 있고 아래와 같이 Item 생성을 위한 서비스 클래스가 있습니다.
-
-Entitiy
+Item Entitiy
 ~~~java
 @Entity
 @Getter @Setter
@@ -90,8 +90,8 @@ createItem1 , createItem2 메소드는 정상 동작하게 될 시 모두 Item�
 
 그러면 여기서 Item 4개를 모두 insert 한 뒤 **예외**가 발생했다고 가정해보겠습니다.
 
-이 경우 insertItem 메소드에는 @Transactional이 적용되어 있기 때문에 두 메소드 모두 Item 4개가 정상적으로 생성될 것이라 예상됩니다.
-해당 상황을 쿠폰이 모두 insert 된 후 **RuntimeException**을 던져 테스트를 진행해보겠습니다.
+이 경우 insertItem 메소드에는 @Transactional이 적용되어 있기 때문에 두 메소드 모두 Item 4개가 정상적으로 생성될 것이라 예상할 수도 있습니다.
+해당 상황을 item이 모두 insert 된 후 **RuntimeException**을 던져 테스트를 진행해보겠습니다.
 
 ~~~java
 
@@ -210,15 +210,46 @@ public class ItemServiceProxy extends ItemService {
 ~~~
 프록시 객체는 ItemService를 상속받고 @Transactional 선언된 메소드에는 트랜잭션 처리를 위한 부가 기능이 실제 객체 메소드 호출사이에 포함되어 있을 것입니다.
 
+다시 돌아와
 
-위 내용을 토대로 몇가지 특이사항에 대해 알 수 있습니다.
+insertItem 메소드를 살펴보면 spring data jpa의 save 메소드를 사용했는데 해당 메소드를 구현한 SimpleJpaRepository의 코드를 살펴보면
+~~~java
+/*
+	 * (non-Javadoc)
+	 * @see org.springframework.data.repository.CrudRepository#save(java.lang.Object)
+	 */
+	@Transactional
+	@Override
+	public <S extends T> S save(S entity) {
+
+		Assert.notNull(entity, "Entity must not be null.");
+
+		if (entityInformation.isNew(entity)) {
+			em.persist(entity);
+			return entity;
+		} else {
+			return em.merge(entity);
+		}
+	}
+~~~
+내부적으로 @Trasnsactinal이 적용되어 있는것을 확인 할수 있습니다.
+
+**위 내용을 토대로**
+
+테스트 코드를 결과에 대해 다시 살펴보면
+
+첫번째 테스트의 경우 insertItem에 @Transactional이 선언되어 있지만 프록시 객체에서 createItem1을 호출하기 때문에 트랜잭션이 적용되지 않습니다. 이후 data jpa **save각 메소드마다 트랜잭션이 적용되어** createItem1 메소드에서 예외가 발생해도 롤백 처리 되지 않았습니다.
+
+
+두번째 테스트의 경우 **createItem2 진입 시점에 트랜잭션이 적용되었고** data jpa save에 @Transactional이 선언되어 있지만 새로운 트랜잭션을 생성하지 않으며 기존 트랜잭션에서 작업을 수행하게 됩니다. 그렇기 때문에 createItem2에서 예외가 발생했을 때 모든 작업이 롤백 처리 된것입니다.<br>
+(이 부분은 default 설정인 propagation = Propagation.REQUIRED 때문인데 아래에서 다시 다뤄보겠습니다.)
 
 <br>
-#### 1. private 메소드는  @Transactional이 적용되지 않음
-@Transactional은 프록시 형태로 동작하기 때문에 외부에서 접근 가능한 메소드만 @Transactional 설정이 가능합니다.
+**위 예시를 통한 내용을 정리해보면 @Transactional 동작 특성은 다음과 같습니다.**
 
 <br>
-#### 2. 같은 클래스 내에서 다른 메소드로 @Transactional이 호출되어도 최초 트랜잭션을 기준으로 동작합니다.
+
+#### 1. 같은 클래스 내에서 다른 메소드로 @Transactional이 호출되어도 최초 트랜잭션을 기준으로 동작합니다.
 위 예시에서 createItem2 메소드가 예상대로 작동하지 않았는데
 ~~~java
 public void createItem2(int index){
@@ -234,33 +265,32 @@ public void createItem2(int index){
 
 <br>
 
-#### 3. @Transactional이 선언되지않은 메소드가 @Transactional이 선언된 메소드를 호출하더라도 트랜잭션 적용이 되지 않는다.
-프록시에서 내부에서 실제 객체를 호출하기 때문에 진입 메소드에 @Transactional이 선언되어있지 않으면 트랜잭션이 적용 되지 않습니다
+#### 2. @Transactional이 선언되지않은 메소드가 @Transactional이 선언된 메소드를 호출하더라도 트랜잭션 적용이 되지 않는다.
+프록시에서 내부에서 실제 객체를 호출하기 때문에 진입 메소드에 @Transactional이 선언되어있지 않으면 트랜잭션이 적용 되지 않습니다.
 
+<br>
+#### 3. private 메소드는  @Transactional이 적용되지 않음
+@Transactional은 프록시 형태로 동작하기 때문에 외부에서 접근 가능한 메소드만 @Transactional 설정이 가능합니다.
 
+<br>
+추가로 createItem2 테스트에서 동작한 **@Transactional 전파 레벨 설정** 에 대해 알아보겠습니다.
+
+<br>
 ## @Transactional 전파 레벨
-1. Propagation.REQUIRED (기본 값)
+1 . Propagation.REQUIRED (기본 값)
+
 ~~~java
 @Transactional(propagation = Propagation.REQUIRED)
 public void test() { ... }
 ~~~
-부모 메소드 (자식을 호출)에 이미 트랜잭션이 적용되어 있다면 기존 트랜잭션을 내에서 로직을 실행하며 트랜잭션이 적용되어 있지 않다면 새로운 트랜잭션을 생성합니다.
-부모 메소드에서 예외가 발생하게되면 롤백 처리되고 자식으로도 롤백이 전파됩니다. 마찬가지로 자식 메소드에서 예외가 발생하면 롤백 처리되고 부모 메소드로 롤백이 전파됩니다.
+부모 메소드 이미 트랜잭션이 적용되어 있다면 자식 메소드에 @Transactional이 적용되어 있어도 기존 트랜잭션을 내에서 로직을 실행하며 , 기존에 트랜잭션이 적용되어 있지 않다면 새로운 트랜잭션을 생성합니다. <br>그래서
+부모 메소드에서 예외가 발생하게되면 롤백 처리되고 자식으로도 롤백이 전파되며 마찬가지로 자식 메소드에서 예외가 발생하면 롤백 처리되고 부모 메소드로 롤백이 전파됩니다.
 해당 설정은 명시하지 않아도 **default**로 적용되어 있습니다.
 
-2. Propagation.REQUIRES_NEW
+2 . Propagation.REQUIRES_NEW
+
 ~~~java
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public void test() { ... }
 ~~~
-Propagation.REQUIRES_NEW로 설정되었을 때에는 매번 새로운 트랜잭션을 시작합니다.  부모 메소드에 이미 트랜잭션이 설정되어 있다면 기존의 트랜잭션은 메소드가 종료할 때까지 대기 상태가 되고 자식의 트랜잭션을 생성해 실행합니다. 각 트랜잭션은 완전히 독립적인 단위로 작동하기 때문에 예외가 발생해도 호출한 곳에는 롤백이 전파되지 않습니다.
-
-
-
-
-
-
-
-
-
-동작예시
+Propagation.REQUIRES_NEW로 설정되었을 때에는 매번 새로운 트랜잭션을 시작합니다.  부모 메소드에 이미 트랜잭션이 설정되어 있다면 기존의 트랜잭션은 메소드가 종료할 때까지 대기 상태가 되고 자식의 트랜잭션을 생성해 실행합니다. 각 트랜잭션은 완전히 독립적인 단위로 작동하기 때문에 예외가 발생해도 롤백이 전파되지 않습니다.
