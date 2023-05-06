@@ -1,14 +1,14 @@
 ---
 layout: post
-title: "Spring AOP (2) - @Aspect를 활용한 AOP"
+title: "Spring Cloud Security"
 author: "jhkim593"
-tags: Spring
+tags: Spring 
 
 ---
 앞선 장에서는 부가 기능 처리를 위한 동적 프록시 생성 방식인 CGLIB와 JDK 동적 프록시와 Spring이 지원하는 프록시 팩토리 , 빈 후처리기에 대해서 알아보았습니다.
 이번 장에서는 @Aspect를 사용해 `Advisor`를 생성하는것에 대해서 자세하게 살펴보겠습니다.
 
->관련 코드는 [github](https://github.com/jhkim593/blog_code/tree/master/spring_aop)를 참고해주세요
+>관련 코드는 [github](https://github.com/jhkim593/blog_code/tree/master/spring_transactional)를 참고해주세요
 <br>
 
 ### @Aspect
