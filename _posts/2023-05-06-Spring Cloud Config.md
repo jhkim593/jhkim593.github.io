@@ -45,6 +45,8 @@ Spring Cloud Config Server는 여러 서비스 환경 설정을 통합해서 관
 Spring actuator와 Spring Cloud Bus, monitor를 적용한
 ConfigServer와 두 ConfigClinet(설정 정보를 읽어오는 user, order 서비스)들을 간단하게 구현해보도록 하겠습니다.
 
+<br>
+
 #### 1. 저장소에 설정 파일 저장
 설정 파일을 관리하기 위한 원격 저장소를 생성하고 아래와 같이 **예시 설정 파일**을 저장했습니다.
 이 위치에 저장된 파일이 Config Server를 통해 각 서비스들이 읽어서 사용하게 됩니다.
