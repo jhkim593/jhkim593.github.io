@@ -3,7 +3,6 @@ layout: post
 title: "Kubernetes Deployment"
 author: "jhkim593"
 tags: Kubernetes
-
 ---
 ## kubernetes Deployment
 
