@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Kubernetes - KEDA를 활용한 HPA"
+title: "Kubernetes - KEDA와 RabbitMQ 지표를 활용한 HPA"
 author: "jhkim593"
 tags: Kubernetes
 ---
