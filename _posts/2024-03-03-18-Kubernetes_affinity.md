@@ -369,4 +369,4 @@ spec:
 
 ## Reference
 
-https://kubernetes.io/ko/docs/concepts/scheduling-eviction/assign-pod-node/
+<https://kubernetes.io/ko/docs/concepts/scheduling-eviction/assign-pod-node/>

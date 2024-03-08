@@ -271,4 +271,4 @@ rabbitmqctl purge_queue a
 
 ## Reference
 
-https://keda.sh/
+<https://keda.sh/>

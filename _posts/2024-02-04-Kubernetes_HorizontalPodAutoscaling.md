@@ -180,4 +180,4 @@ php-apache   Deployment/php-apache/scale   0% / 50%     1         10        1   
 
 ## Reference
 
-https://kubernetes.io/ko/docs/tasks/run-application/horizontal-pod-autoscale/
+<https://kubernetes.io/ko/docs/tasks/run-application/horizontal-pod-autoscale/>
