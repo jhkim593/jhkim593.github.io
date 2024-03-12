@@ -87,6 +87,15 @@ spec:
   selector:
     run: php-apache
 ```
+#### hpa가 활성화되어있다면 `spec.replicas`의 값을 삭제하고 hpa의 min , max replicas 설정으로 대체해야합니다.
+
+만약 `spec.replicas` 설정이 있으면 `kubectl apply -f deployment.yaml`와 같은 커맨드로 변경 사항을 적용할 때마다 파드 replicas를 기재된 `spec.replicas`로 변경하게됩니다.
+
+예를 들어 deployment replicas가 3이고 hpa를 통해 10개 까지 replicas가 늘어난 상황에서 **deployment가 업데이트되면 replicas가 바로 3개로 줄어들어 예상하지 못한 문제가 발생**할 수 있습니다.
+
+테스트를 위해서 본 예시에서는 `spec.replicas`를 기재하겠습니다.
+
+<br>
 
 ### HPA 생성
 
