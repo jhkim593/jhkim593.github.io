@@ -2,7 +2,7 @@
 layout: post
 title: "MapStruct를 이용해 Entity <-> Dto 변환"
 author: "jhkim593"
-tags: JPA
+tags: Spring
 
 ---
 

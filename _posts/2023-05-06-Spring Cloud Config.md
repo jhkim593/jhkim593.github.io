@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Spring Cloud - Config Server / Client"
+title: "Spring Cloud (3) - Config Server / Client"
 author: "jhkim593"
 tags: Spring
 
