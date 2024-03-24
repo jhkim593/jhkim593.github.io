@@ -190,13 +190,13 @@ public void progressUpdate(Long analysisId, Integer progress) throws Exception {
 ```java
 public void resultUpdate(Long analysisId, Integer count) throws Exception {
         analysisService.resultUpdate(analysisId, count);
-				requestService.requestUpdate(requestId);
+        requestService.requestUpdate(requestId);
     }
 
 //분석 상태 업데이트
 public void progressUpdate(Long analysisId, Integer progress) throws Exception {
         analysisService.progressUpdate(analysisId, count);
-			  requestService.progressUpdate(requestId);
+        requestService.progressUpdate(requestId);
     }
 ```
 
