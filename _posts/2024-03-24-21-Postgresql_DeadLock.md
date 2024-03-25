@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PostgreSQL - Lock"
+title: "PostgreSQL - DeadLock"
 author: "jhkim593"
 tags: PostgreSQL
 ---
