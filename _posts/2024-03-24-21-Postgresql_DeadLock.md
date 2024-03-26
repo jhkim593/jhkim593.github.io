@@ -200,7 +200,7 @@ public void progressUpdate(Long analysisId, Integer progress) throws Exception {
     }
 ```
 
-테이블 업데이트 마다 Transaction을 분리해 **DeadLock** 문제를 해결 할 수있었습니다.
+각 서비스 메소드 호출마다 transaction을 걸었습니다. 이렇게 transaction을 분리해 **DeadLock** 문제를 해결 할 수있었습니다.
 
 
 ---
