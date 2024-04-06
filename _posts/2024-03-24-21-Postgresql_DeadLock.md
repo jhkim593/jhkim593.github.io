@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PostgreSQL - Lock"
+title: "PostgreSQL - DeadLock"
 author: "jhkim593"
 tags: PostgreSQL
 ---
@@ -22,7 +22,7 @@ PostgreSQL는 테이블의 데이터에 대한 동시 액세스를 제어하기�
 
 Lock에는 여러 타입이 있습니다. 여기서는 테이블 수준의 잠금 중 몇가지만 알아보도록 하겠습니다.
 
-> https://www.postgresql.org/docs/current/explicit-locking.html
+> <https://www.postgresql.org/docs/current/explicit-locking.html>
 >
 
 <br>
@@ -200,7 +200,7 @@ public void progressUpdate(Long analysisId, Integer progress) throws Exception {
     }
 ```
 
-테이블 업데이트 마다 Transaction을 분리해 **DeadLock** 문제를 해결 할 수있었습니다.
+각 서비스 메소드 호출마다 transaction을 걸었습니다. 이렇게 transaction을 분리해 **DeadLock** 문제를 해결 할 수있었습니다.
 
 
 ---
