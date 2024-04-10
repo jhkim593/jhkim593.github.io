@@ -17,10 +17,10 @@ tags: Kubernetes
 
 쿠버네티스 **Service 유형은 크게 4가지**로 분류됩니다.
 
-1. ClusterIp
-2. NodePort
-3. LoadBalancer
-4. ExternalName
+- ClusterIp
+- NodePort
+- LoadBalancer
+- ExternalName
 
 아래에서는 ClusterIP, NodePort, LoadBalancer만 살펴보도록 하겠습니다.
 
