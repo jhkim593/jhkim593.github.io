@@ -4,7 +4,7 @@ title: "PostgreSQL - bulk insert"
 author: "jhkim593"
 tags: PostgreSQL
 ---
-이번장에서는 많은 데이터를 한번에 DB에 저장할 때 bulk insert를 적용해 성능 개선을 했던 내용을 다뤄보도록 하겠습니다.
+이번장에서는 데이터를 한번에 DB에 저장할 때 bulk insert를 적용해 성능 개선을 했던 내용에 대해 다뤄보도록 하겠습니다.
 
 <br>
 ## 문제 상황
