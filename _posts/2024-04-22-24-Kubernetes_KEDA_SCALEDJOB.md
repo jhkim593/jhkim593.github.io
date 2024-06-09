@@ -235,7 +235,7 @@ spec:
       spec:
         containers:
         - name: test
-          image: jhkim593/scaled_job_test:8
+          image: jhkim593/scaled_job_test:9
           env:
             - name: MQ_HOST
               value: "172.30.1.2"
@@ -248,6 +248,13 @@ spec:
   failedJobsHistoryLimit: 5                   # Optional. Default: 100. How many failed jobs should be kept
   minReplicaCount: 2   
   maxReplicaCount: 10                        # Optional. Default: 100
+  rollout:
+    strategy: gradual                         
+    propagationPolicy: foreground
+  scalingStrategy:
+    customScalingQueueLengthDeduction: 0
+    customScalingRunningJobPercentage: "0"
+    strategy: custom
   triggers:
   - type: rabbitmq
     metadata:
@@ -255,10 +262,10 @@ spec:
       protocol: amqp
       queueName: a
       mode: QueueLength
-      value: "2"
+      value: "1"
 ```
 
-ScaledJob 설정은 다음과 같습니다.
+기본적인 ScaledJob 설정은 다음과 같습니다.
 
 - `spec.jobTargetRef.parallelism`  : 병렬 처리를 위해 동시 작업할 파드 수치
 - `spec.jobTargetRef.completions` : default는 1이며 해당 수치만큼 성공할 때까지 Job이 실행
@@ -275,6 +282,10 @@ ScaledJob 설정은 다음과 같습니다.
 
 <br>
 `containers.env`에는 컨테이너 실행시 사용하기 위한 **MQ_HOST**, **MY_POD_IP**를 정의했습니다. **MQ_HOST**는 분석 서버 실행시에, **MY_POD_IP**는 entrypoint.sh 실행시에 사용됩니다.
+
+ScaledJob `jobTargetRef` 의 이미지가 변경된다고해도 기존에 동작 중인 분석은 죽지 않아야 하기 때문에 `rollout.strategy` 를 gradual로 설정했습니다.
+
+분석은 언제 종료될지 예측이 쉽지 않기 때문에 scale out 시에 기존에 동작중인 Job 카운트는 scale 계산시 제외해 큐에 분석 요청이 올 때마다 Job이 생길 수 있도록 하기 위해서 `scalingStrategy.strategy` 을 custom으로 설정하고 customScalingQueueLengthDeduction과 customScalingRunningJobPercentage을 0으로 설정했습니다.
 
 <br>
 # KEDA ScaledJob 적용 테스트
