@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PostgreSQL - Covering Index를 적용을 통해 페이징 성능 개선"
+title: "PostgreSQL - Covering Index 적용을 통해 페이징 성능 개선"
 author: "jhkim593"
 tags: PostgreSQL
 ---
