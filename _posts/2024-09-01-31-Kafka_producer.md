@@ -53,7 +53,7 @@ tags: Kafka
 - acks  : 프로듀서가 전송한 데이터가 브로커들에 **정상적으로 저장되었는지 성공 여부를 확인**하는데 0 ,1 , all ( -1 ) 중 하나로 설정 (아래에서 다시 설명하겠습니다.)
 - linger.ms : 배치 전송전 대기 시간
 - retries : 브로커 에러받고난뒤 재전송 시도 횟수
-- max.in.flight.request.per.connection: 한번에 요청하는 최대 커넥션 개수
+- max.in.flight.requests.per.connection: 한번에 요청하는 최대 커넥션 개수
 - partitioner.class : 레코드를 전송할때 적용할 파티셔너 클래스 지정
 - enable.idempotence :멱등성 프로듀서로 동작할지 여부 설정 (멱등성 프로듀서에 대해서는 추후에 다루도록 하겠습니다.)
 - transaction.id : 레코드 전송시 트랜잭션 단위로 묶을지 여부를 설정 (멱등성 프로듀서에 대해서는 추후에 다루도록 하겠습니다.)
