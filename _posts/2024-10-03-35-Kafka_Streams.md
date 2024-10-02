@@ -173,7 +173,7 @@ public class StreamsFilter {
 4. **stream-test2** 토픽으로 변환된 레코드를 전송합니다.
 
 <br>
-**어플리케이션을 실행시킨 뒤 stream-test1 토픽에 아래 메세지를 전송해보록 하겠습니다.**
+어플리케이션을 실행시킨 뒤 **stream-test1** 토픽에 아래 메세지를 전송해보록 하겠습니다.
 
 ```java
 key : "k1"  value : "v1      "
@@ -189,7 +189,7 @@ key : "key1"  value : "value1"
 <br>
 ## KStream , KTable join
 
-product-name , product-price 토픽을 각각 KStream , KTable로 가져와 조인 후 product-join 토픽에 저장해보도록 하겠습니다. 먼저 아래 명령어를 통해 토픽을 생성합니다.
+**product-name** , **product-price** 토픽을 각각 KStream , KTable로 가져와 조인 후 **product-join** 토픽에 저장해보도록 하겠습니다. 먼저 아래 명령어를 통해 토픽을 생성합니다.
 
 ```bash
 bin/kafka-topics.sh --create --bootstrap-server localhots:9092 --partitions 3 --topic product-name
@@ -262,7 +262,7 @@ key : "1"  value : "7000"
 <br>
 ## KStream , GlobalKTable join
 
-여기서는 product-name , product-price 각각 KStream ,GlobalKTable로 가져와 product-join 토픽에 저장하도록 해보겠습니다. 먼저 아래 명령어를 통해 토픽을 생성합니다.
+여기서는 **product-name** , **product-price** 각각 KStream ,GlobalKTable로 가져와 **product-join** 토픽에 저장하도록 해보겠습니다. 먼저 아래 명령어를 통해 토픽을 생성합니다.
 
 ```java
 bin/kafka-topics.sh --create --bootstrap-server localhots:9092 --partitions 3 --topic product-name
@@ -270,7 +270,7 @@ bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --partitions 7 --
 bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --partitions 3 --topic product-join
 ```
 
-조인하고자 하는 토픽이 코파티셔닝 되어있지 않아도 되기 때문에 product-price 토픽의 파티션을 임의로 다르게 설정했습니다.
+조인하고자 하는 토픽이 코파티셔닝 되어있지 않아도 되기 때문에 **product-price** 토픽의 파티션을 임의로 다르게 설정했습니다.
 
 KStream ,GlobalKTable을 조인하기 위한 어플리케이션 코드입니다.
 
