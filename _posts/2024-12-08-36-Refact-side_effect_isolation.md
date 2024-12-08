@@ -74,7 +74,7 @@ http://test/v1
 @Service
 @RequiredArgsConstructor
 public class CallbackService {
-    private final HttpClient httpClient;
+    private final RestHttpClient httpClient;
     private final ObjectMapper objectMapper;
 
     public void analysisSuccessCallback(Analysis analysis) throws Exception {
@@ -96,7 +96,7 @@ public class CallbackService {
     }
 
     private void httpSend(CallbackBody body, CallbackUrl callbackUrl) throws JsonProcessingException {
-        httpClient.sendRequest(objectMapper.writeValueAsString(body), callbackUrl.getUrl(),"POST", callbackUrl.convertToheaderMap(),1000l);
+        httpClient.sendRequest(objectMapper.writeValueAsString(body), callbackUrl.getUrl(),"POST", callbackUrl.convertToheaderMap());
     }
 }
 ```
@@ -222,7 +222,7 @@ Junit으로 작성한 테스트 코드입니다. 외부의 의존성이 없기 �
 @Service
 @RequiredArgsConstructor
 public class CallbackService {
-    private final HttpClient httpClient;
+    private final RestHttpClient httpClient;
     private final ObjectMapper objectMapper;
 
     public void sendSuccessCallback(Analysis analysis) throws Exception {
@@ -239,7 +239,7 @@ public class CallbackService {
         CallbackUrl callbackUrl = callback.getCallbackUrl();
         for(int j=0; j< bodyCount; j++){
             httpClient.sendRequest(
-                    objectMapper.writeValueAsString(callback.getBody(j)), callbackUrl.getUrl(), "POST", callbackUrl.convertToheaderMap(), 10000l);
+                    objectMapper.writeValueAsString(callback.getBody(j)), callbackUrl.getUrl(), "POST", callbackUrl.convertToheaderMap());
         }
     }
 }
