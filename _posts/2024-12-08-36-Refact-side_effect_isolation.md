@@ -88,6 +88,8 @@ public class CallbackService {
             CallbackBody body = getBody(issue, pageNo, issues, type);
             //2
             httpSend(body, callbackUrl);
+
+            pageNo++
         }
     }
 
