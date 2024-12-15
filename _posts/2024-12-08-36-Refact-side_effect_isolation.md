@@ -2,7 +2,7 @@
 layout: post
 title: "부작용과 격리된 순수 함수 만들기"
 author: "jhkim593"
-tags: Java
+tags: TEST
 ---
 프로젝트 리팩토링을 진행하면서 이동욱님 블로그에서 [좋은 함수 만들기](https://jojoldu.tistory.com/697) 게시글을 읽게 되었고
 
@@ -88,8 +88,6 @@ public class CallbackService {
             CallbackBody body = getBody(issue, pageNo, issues, type);
             //2
             httpSend(body, callbackUrl);
-
-            pageNo++;
         }
     }
 
@@ -251,7 +249,7 @@ public class CallbackService {
 
 `SuccessCallback` 클래스를 테스트 하는 것으로 핵심 로직이 검증되었기 때문에 부작용으로 테스트가 어려운 부분은 테스트 더블을 사용하거나 [WireMock](https://wiremock.org/docs/download-and-installation/) 같은 라이브러리로 보완하면 될 것입니다.
 
-어플리케이션 코드를 작성하다 보면 부작용이 있는 함수는 반드시 존재하게 됩니다. 그러나 부작용과 순수 로직을 격리하고, **테스트 하기 쉬운 영역을 확보**하면 프로젝트의 유지보수성이 향상되고 더욱 안정적인 프로젝트로 발전할 수 있을 것이라 생각합니다.
+어플리케이션 코드를 작성하다 보면 부작용이 있는 함수는 반드시 존재하게 됩니다. 그러나 부작용과 순수 로직을 격리하고, **테스트가 쉬운 영역을 최대한 확보**하면 프로젝트의 유지보수성이 향상되고 더욱 안정적인 프로젝트로 발전할 수 있을 것이라 생각합니다.
 
 ---
 ## Reference
