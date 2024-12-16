@@ -54,6 +54,7 @@ http://test/v1
 {
     "pageNo" : 1 ,
     "lastPageNo" : 2,
+    "type": "type",
     "issue" : "A"
 }
 ```
@@ -63,9 +64,11 @@ http://test/v1
 {
     "pageNo" : 2 ,
     "lastPageNo" : 2,
+    "type": "type",
     "issue" : "B"
 }
 ```
+type은 분석 타입을 의미하지만 예시에서는 "type"을 사용했습니다.
 
 <br>
 서비스 코드는 다음과 같습니다.
