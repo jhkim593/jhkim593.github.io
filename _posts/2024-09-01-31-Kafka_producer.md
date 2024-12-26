@@ -156,7 +156,7 @@ public class ProducerWithAsyncCallback {
 
     public static void main(String[] args) {
 
-				//프로듀서 옵션 설정
+		//프로듀서 옵션 설정
         Properties configs = new Properties();
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -165,7 +165,7 @@ public class ProducerWithAsyncCallback {
         //설정된 옵션으로 프로듀서 객체 생성
         KafkaProducer<String, String> producer = new KafkaProducer<>(configs);
 
-				//토픽 , 메세지 정보로 레코드 생성
+		//토픽 , 메세지 정보로 레코드 생성
         ProducerRecord<String, String> record = new ProducerRecord<>(TOPIC_NAME, "key", "value");
         //레코드와 콜백 객체로 send 메소드 호출
         producer.send(record, new ProducerCallback());
