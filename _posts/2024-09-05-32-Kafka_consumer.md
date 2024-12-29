@@ -108,7 +108,7 @@ tags: Kafka
     - 커밋 응답 기다지리 않고 다음 작업을 수행
     - 커밋 응답을 기다리지 않기 때문에 성공 실패 여부를 바로 알 수없고 콜백을 통해 확인 할 수 있음
 
-하지만 **수동 커밋의 경우에도 메세지 중복이 발생** 할 수 있습니다. 예를 들어 데이터 처리가 끝난 후 문제가 생겨 커밋이 정상적으로 진행되지 않았다면 메세지를 다시 읽어 중복 처리를 하게 될 수 있습니다..
+하지만 **수동 커밋의 경우에도 메세지 중복이 발생** 할 수 있습니다. 예를 들어 데이터 처리가 끝난 후 문제가 생겨 커밋이 정상적으로 진행되지 않았다면 메세지를 다시 읽어 중복 처리를 하게 될 수 있습니다.
 
 <br>
 # 컨슈머 랙
@@ -204,7 +204,7 @@ public class ConsumerWithAutoCommit {
     private final static String GROUP_ID = "test-group";
 
     public static void main(String[] args) {
-		    //컨슈머 properties 설정
+	    //컨슈머 properties 설정
         Properties configs = new Properties();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
@@ -216,7 +216,7 @@ public class ConsumerWithAutoCommit {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(configs);
         consumer.subscribe(Arrays.asList(TOPIC_NAME));
 
-				// 무한루프 돌며 poll 수행
+		// 무한루프 돌며 poll 수행
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
             for (ConsumerRecord<String, String> record : records) {
@@ -240,7 +240,7 @@ public class ConsumerWithASyncCommit {
     private final static String GROUP_ID = "test-group";
 
     public static void main(String[] args) {
-		    //컨슈머 properties 설정
+		//컨슈머 properties 설정
         Properties configs = new Properties();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
@@ -251,7 +251,7 @@ public class ConsumerWithASyncCommit {
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(configs);
         consumer.subscribe(Arrays.asList(TOPIC_NAME));
 
-				// 무한루프 돌며 poll 수행
+		// 무한루프 돌며 poll 수행
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
             for (ConsumerRecord<String, String> record : records) {

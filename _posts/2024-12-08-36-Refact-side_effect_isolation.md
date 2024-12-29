@@ -4,9 +4,8 @@ title: "부작용과 격리된 순수 함수 만들기"
 author: "jhkim593"
 tags: TEST
 ---
-프로젝트 리팩토링을 진행하면서 이동욱님 블로그에서 [좋은 함수 만들기](https://jojoldu.tistory.com/697) 게시글을 읽게 되었고
 
-프로젝트에 적용했던 과정을 정리했습니다.
+프로젝트 리팩토링 진행 중에 이동욱님 블로그에서 [좋은 함수 만들기](https://jojoldu.tistory.com/697)를 읽게 되었고 여기서 얻은 내용을 바탕으로 직접 리팩토링에 적용한 과정을 정리했습니다.
 
 <br>
 ## 순수 함수 , 부작용 함수
@@ -43,6 +42,7 @@ tags: TEST
 
 - 현재 이슈 페이지 번호
 - 총 이슈 수
+- 분석 타입
 - 결과 이슈 데이터
 
 예를 들어 사용자가 http://test/v1를 사전에 입력했고
@@ -54,6 +54,7 @@ http://test/v1
 {
     "pageNo" : 1 ,
     "lastPageNo" : 2,
+    "type": "type",
     "issue" : "A"
 }
 ```
@@ -63,9 +64,11 @@ http://test/v1
 {
     "pageNo" : 2 ,
     "lastPageNo" : 2,
+    "type": "type",
     "issue" : "B"
 }
 ```
+type은 분석 타입을 의미하지만 예시에서는 "type"을 사용했습니다.
 
 <br>
 서비스 코드는 다음과 같습니다.
