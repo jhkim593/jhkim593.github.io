@@ -117,7 +117,7 @@ public class Main{
 <br>
 ### 난이도 : ⭐⭐
 
-1, 2, 3 합을 구성할 때 순서가 관계 없기 때문에 오름 차순 정렬을 한다.  
+1, 2, 3 합을 구성할 때 순서가 관계 없기 때문에 **오름 차순 정렬**을 한다.  
 오름 차순 정렬 했을 때 dp[i][j] 는 j로 끝날 때 i가 만들어지는 경우의 수이다.  
 예를 들어 dp[4][2]는 2로 끝날 때 4가되는 경우의 수이다.  
 
@@ -223,6 +223,119 @@ public class Main{
             if(i> answer) answer = i;
         }
         System.out.print(answer);
+    }
+}
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary>BOJ 거리/summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/12026)
+
+<br>
+### 난이도 : ⭐⭐
+이중 반복문을 돌아 dp[] 1차원 배열에 보도블럭을 밟았을 때 에너지 최솟값을 저장했다.
+
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+
+    public static void main(String[]args) throws Exception{
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(bf.readLine());
+
+        int N = Integer.parseInt(stz.nextToken());
+
+        stz = new StringTokenizer(bf.readLine());
+        String [] arr= new String[N];
+        String roads = stz.nextToken();
+
+        int idx =0;
+        for(String road : roads.split("")){
+            arr[idx] = road;
+            idx++;
+        }
+
+        int[] dp = new int[N];
+
+        for(int i=0;i<N-1;i++){
+            if(i!=0 && dp[i] ==0) continue;
+
+            for(int j=i+1;j<N;j++){
+                if(arr[i].equals("B") && arr[j].equals("O") || arr[i].equals("O") && arr[j].equals("J") || arr[i].equals("J") && arr[j].equals("B")){
+                    if(dp[j] == 0) dp[j] = dp[i]+((j-i)*(j-i));
+                    dp[j] = Math.min(dp[j],dp[i]+((j-i)*(j-i)));
+                }
+            }
+        }
+        int answer = -1;
+        if(dp[N-1]!=0) answer = dp[N-1];
+        System.out.println(answer);
+    }
+}
+```
+</div>
+</details>
+
+<br>
+
+<details>
+<summary><strong>평범한 배낭</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/12865)
+
+<br>
+### 난이도 : ⭐⭐⭐
+dp[i][j] 이차원 배열을 선언했고 i번째 물건까지 고려하고 j무게를 최대로 했을 때 가치의 최대값을 저장했다.
+예를들어 dp[3][2]는 3번째 물건까지 고려됐고 최대 무게가 2일 때 가치의 최대값을 나타낸다.
+dp[2][2] 와 비교해서 크거나 같기 때문에 `dp[i][j]=dp[i-1][j];` 로 초기화를 진행했다.
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(stz.nextToken());
+        int limit = Integer.parseInt(stz.nextToken());
+
+        int[][]arr = new int[n+1][2];
+        for (int i = 1; i<=n; i++) {
+            stz = new StringTokenizer(br.readLine());
+            int w = Integer.parseInt(stz.nextToken());
+            int v = Integer.parseInt(stz.nextToken());
+
+            arr[i][0] = w;
+            arr[i][1] = v;
+        }
+
+        int[][]dp = new int[n+1][limit+1];
+
+        for(int i=1;i<=n;i++){
+           for(int j=1;j<=limit;j++){
+               dp[i][j]=dp[i-1][j];
+               if(j-arr[i][0]>=0){
+                  dp[i][j]=Math.max(dp[i][j],dp[i-1][j-arr[i][0]]+arr[i][1]);
+               }
+           }
+        }
+
+        System.out.println(dp[n][limit]);
     }
 }
 ```
