@@ -233,7 +233,7 @@ public class Main{
 <br>
 
 <details>
-<summary>BOJ 거리/summary>
+<summary>BOJ 거리</summary>
 <div markdown="1">
 
 > [문제 링크](https://www.acmicpc.net/problem/12026)
@@ -299,7 +299,7 @@ public class Main{
 ### 난이도 : ⭐⭐⭐
 dp[i][j] 이차원 배열을 선언했고 i번째 물건까지 고려하고 j무게를 최대로 했을 때 가치의 최대값을 저장했다.
 예를들어 dp[3][2]는 3번째 물건까지 고려됐고 최대 무게가 2일 때 가치의 최대값을 나타낸다.
-dp[2][2] 와 비교해서 크거나 같기 때문에 `dp[i][j]=dp[i-1][j];` 로 초기화를 진행했다.
+dp[2][2] 와 비교해 크거나 같기 때문에 `dp[i][j]=dp[i-1][j];` 로 초기화를 진행했다.
 
 ### 코드
 ```java
