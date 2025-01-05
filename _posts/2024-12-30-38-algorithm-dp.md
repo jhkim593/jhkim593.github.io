@@ -341,3 +341,52 @@ public class Main {
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>크리 보드</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/11058)
+
+<br>
+### 난이도 : ⭐⭐
+4가지 선택지가 있기 때문에 모두 탐색하게되면 최대 4<sup>100</sup> 연산을 수행해야한다.
+dp[i] 1차원 배열에 i번 눌렀을 때 출력되는 A의 최대값을 저장한다.  
+
+1번 버튼이 아닌 2, 3, 4버튼으로 A를 출력하기 위해서는
+전체 선택 -> 복사 -> 붙여넣기가 모두 수행되어야하기 때문에 최소 3번의 키보드가 더 눌려야한다.
+3번 이후부터는 붙여넣기를 통해 출력이 가능하므로
+
+`dp[i+j] = Math.max(dp[i+j] ,dp[i]*(j-1))`이 된다.  
+
+1번 버튼을 통해 화면에 A하나만 출력할 수 있기 때문에 `dp[i+1]= Math.max(dp[i+1],dp[i]+1);`를 추가했다.
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(stz.nextToken());
+
+        long []dp =new long[n+1];
+        dp[1] =1;
+        for (int i=1; i<n; i++){
+            dp[i+1]= Math.max(dp[i+1],dp[i]+1);
+            for(int j=3;i+j<=n;j++){
+                dp[i+j]=Math.max(dp[i+j],dp[i]*(j-1));
+            }
+        }
+        System.out.print(dp[n]);
+    }
+}
+```
+</div>
+</details>
