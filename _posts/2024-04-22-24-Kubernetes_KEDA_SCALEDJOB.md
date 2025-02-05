@@ -12,7 +12,7 @@ tags: Kubernetes
 
 현재 프로젝트에는 취약점 분석을 위한 분석 파드가 존재하고 이 분석 파드는 **종료 시간을 예측 할 수 없는 긴 시간 동안 분석을 수행**했습니다.
 
-분석 파드는 HPA를 통해 관리되고 있었는데 ScaleDown시에 HPA가 파드를 **임의로 종료시켜 분석 중인 파드가 죽을때가 있었습니다.** 분석 중인 파드가 죽게되면 처음 부터 분석을 진행해야 했기때문에 분석 시간이 오래 걸리는 문제가 발생했었습니다.
+HPA를 적용해봤지만 ScaleDown시에 HPA가 파드를 **임의로 종료시켜 분석 중인 파드가 종료될 때가 있었습니다.** 분석 중인 파드가 죽게되면 처음 부터 분석을 진행해야 했기때문에 분석 시간이 오래 걸리는 문제가 발생했었습니다.
 
 HPA 설정을 통해 해결해보려고 했지만 분석 중인 파드를 감지해 ScaleDown시 제외하는 기능은 제공하지 않고 있었습니다.
 
@@ -28,9 +28,9 @@ ScaledObject와 마찬가지로 약 60개 이상의 이벤트 타입을 지원�
 
 Kubernetes Job은 **파드 작업 수행 완료**를 보장하기 때문에 문제 상황 해결에 적절하다고 판단했고 이제 테스트용 분석 서버 프로젝트를 생성해 ScaledJob을 어떻게 적용했는지 살펴보도록 하겠습니다. 아키텍처는 아래와 같습니다.
 
-<img src="/assets/images/24/1.png"  width="600" height="400"/>
+<img src="/assets/images/24/1.png"  width="650" height="400"/>
 
-KEDA ScaledJob을 통해 RabbitMQ Queue에 처리 대기 중인 메세지가 있다면 추가 Job을 생성해 메세지를 읽어 분석을 진행하고
+KEDA ScaledJob을 통해 RabbitMQ Queue에 처리 대기 중인 메세지가 있다면 Job을 생성해 분석을 진행하고
 Job이 완료되면 완료된 파드는 종료되도록 해보겠습니다.
 
 파드에서 동작할 테스트 **분석 서버** 프로젝트는 [링크](https://github.com/jhkim593/blog_code/tree/master/keda_scaledJob)를 참고해주세요.
@@ -227,10 +227,10 @@ metadata:
  name: scaledjob
 spec:
   jobTargetRef:
-    parallelism: 1                            # [max number of desired pods](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#controlling-parallelism)
-    completions: 1                            # [desired number of successfully finished pods](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/#controlling-parallelism)
-    activeDeadlineSeconds: 600                #  Specifies the duration in seconds relative to the startTime that the job may be active before the system tries to terminate it; value must be positive integer
-    backoffLimit: 6                           # Specifies the number of retries before marking this job failed. Defaults to 6
+    parallelism: 1                           
+    completions: 1                           
+    activeDeadlineSeconds: 600               
+    backoffLimit: 6                           
     template:
       spec:
         containers:
@@ -243,11 +243,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-  pollingInterval: 30                         # Optional. Default: 30 seconds
-  successfulJobsHistoryLimit: 5               # Optional. Default: 100. How many completed jobs should be kept.
-  failedJobsHistoryLimit: 5                   # Optional. Default: 100. How many failed jobs should be kept
-  minReplicaCount: 2   
-  maxReplicaCount: 10                        # Optional. Default: 100
+  pollingInterval: 30                        
+  successfulJobsHistoryLimit: 5             
+  failedJobsHistoryLimit: 5                  
+  minReplicaCount: 0   
+  maxReplicaCount: 40                       
   rollout:
     strategy: gradual                         
     propagationPolicy: foreground
@@ -281,11 +281,10 @@ spec:
 > <https://keda.sh/docs/2.13/concepts/scaling-jobs/>
 
 <br>
-`containers.env`에는 컨테이너 실행시 사용하기 위한 **MQ_HOST**, **MY_POD_IP**를 정의했습니다. **MQ_HOST**는 분석 서버 실행시에, **MY_POD_IP**는 entrypoint.sh 실행시에 사용됩니다.
+`containers.env`에는 컨테이너 실행시 사용하기 위한 **MQ_HOST**, **MY_POD_IP**를 정의했습니다. **MQ_HOST**는 분석 서버 실행시에, **MY_POD_IP**는 entrypoint.sh 실행시에 사용됩니다.  
+ScaledJob `jobTargetRef` 의 이미지가 변경된다고해도 기존 분석은 종료되지않도록 `rollout.strategy` 를 gradual로 설정했습니다.
 
-ScaledJob `jobTargetRef` 의 이미지가 변경된다고해도 기존에 동작 중인 분석은 죽지 않아야 하기 때문에 `rollout.strategy` 를 gradual로 설정했습니다.
-
-분석은 언제 종료될지 예측이 쉽지 않기 때문에 scale out 시에 기존에 동작중인 Job 카운트는 scale 계산시 제외해 큐에 분석 요청이 올 때마다 Job이 생길 수 있도록 하기 위해서 `scalingStrategy.strategy` 을 custom으로 설정하고 customScalingQueueLengthDeduction과 customScalingRunningJobPercentage을 0으로 설정했습니다.
+분석은 언제 종료될지 예측이 쉽지 않기 때문에 큐에 분석 요청이 올 때마다 Job이 생길 수 있도록 하기 위해서 `scalingStrategy.strategy` 을 custom으로 설정하고 `customScalingQueueLengthDeduction`과 `customScalingRunningJobPercentage`을 0으로 설정했습니다.
 
 <br>
 # KEDA ScaledJob 적용 테스트
@@ -312,7 +311,7 @@ rabbitmqadmin publish exchange=exchange routing_key=akey payload="test"
 
 <img src="/assets/images/24/3.png"  width="600" height="300"/>
 
-Queue에 메세지를 읽어 15초뒤에 job 하나가 완료되고`minReplicaCount` 에 맞게 새로운 job이 하나더 생기는 것을 확인 할 수있습니다.
+Queue에 메세지를 읽어 15초뒤에 job 하나가 완료되고`minReplicaCount` 에 맞게 새로운 job이 다시 생기는 것을 확인 할 수있습니다.
 
 <br>
 message를 추가로 더 날려보면 Queue에 message가 쌓이는 만큼 동작 중인 파드가 늘어난 것을 확인 할 수 있습니다.

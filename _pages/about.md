@@ -4,12 +4,37 @@ title: "About"
 author: "jhkim593"
 permalink: /about/
 ---
+Java, Spring Boot, PostgreSQL, Kubernetes 기반의 서버 백엔드 개발자입니다.
 
-<!-- A friend of mine writes short stories. One sunny day, I asked if he wanted a website to showcase his works and he agreed. I decided to use GitHub Pages to host his site. That way he wouldn't have to buy a domain and a server.
 
-While doing some research up on GitHub Pages, I accidentally chanced upon this _simple, blog-aware, static site generator_ called [Jekyll](https://jekyllrb.com/) which works really well with GitHub Pages. I figured it would do just fine for my friend and I set about searching for a pretty theme. I wanted a theme with a _book-ish_ vibe. Unfortunately, most of the themes were too modern. Eventually, I caved and begun working on my own theme. With the help of [Poole](https://github.com/poole/poole), the Jekyll Butler, I was able to build **Tale**.
+## SKILL
+Java, Spring Boot, PostgreSQL, RabbitMQ, Kubernetes, TeamCity, Github action,
 
-## Contribute
-Feel free to create an issue or make a pull request on [GitHub](https://github.com/chesterhow/tale).
 
-Thanks for reading! -->
+## EXPERIENCE
+
+취약점 분석 통합 플랫폼 개발
+- 분석 흐름
+
+
+
+<div style="display: flex; align-items: flex-start; gap: 20px;">
+
+  <div style="flex: 1;">
+    <h2>SPARROW</h2>
+    <p style="margin: 4px 0; line-height: 0.2; font-size: 14px;">BackEnd Developer</p>
+    <p style="margin: 4px 0; font-size: 14px;">2021.10 ~ 현재</p>
+  </div>
+
+  <div style="flex: 2;">
+    <h3>API 기반 취약점 분석 서비스 개발</h3>
+    <ul>
+      <li>분석 파드 오토스케일링을 통한 클라우드 리소스 사용 개선</li>
+      <li>PostgreSQL 쿼리 성능 개선</li>
+      <li>PostgreSQL 성능 튜닝 및 <strong>장애 대응</strong></li>
+      <li>Junit 기반 테스트 코드 작성</li>
+      <li>Github Action, TeamCity를 통한 개발 , 운영 환경 배포 자동화 구축</li>
+    </ul>
+  </div>
+
+</div>
