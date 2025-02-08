@@ -390,3 +390,57 @@ public class Main {
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>소형 기관차</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/2616)
+
+<br>
+### 난이도 : ⭐⭐⭐
+소형 기관차가 3대이기 때문에 최대 N<sup>3</sup> 연산을 수행해야한다.
+
+dp[i][j] 2차원 배열을 생성해서 i번쨰 소형 기관차, j번째 객차까지 고려했을 때 최대 손님수를 저장했다.
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+
+    public static void main(String[]args) throws Exception{
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(bf.readLine());
+
+        int n = Integer.parseInt(stz.nextToken());
+
+        int[] arr = new int[n+1];
+        int[] sum = new int[n+1];
+        stz = new StringTokenizer(bf.readLine());
+        for(int i=1;i<=n; i++){
+            int num = Integer.parseInt(stz.nextToken());
+            arr[i] = num;
+            sum[i] = sum[i-1] + num;
+        }
+
+        stz = new StringTokenizer(bf.readLine());
+        int limit = Integer.parseInt(stz.nextToken());
+        int[][] dp = new int[4][n+1];
+
+        for(int i=1;i<=3;i++){
+            for(int j=i*limit; j<=n; j++){
+               dp[i][j] = Math.max(dp[i][j-1],dp[i-1][j-limit]+sum[j]-sum[j-limit]);
+            }
+        }
+        System.out.println(dp[3][n]);
+
+    }
+}
+```
+</div>
+</details>
