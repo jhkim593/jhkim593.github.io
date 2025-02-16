@@ -56,6 +56,8 @@ public class Main{
 </details>
 
 
+<br>
+
 <details>
 <summary><strong>용액</strong></summary>
 <div markdown="1">
