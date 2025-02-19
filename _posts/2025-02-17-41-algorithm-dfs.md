@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "알고리즘 - DFS 문제 풀이 모음"
+title: "알고리즘 - DFS, BFS 문제 풀이 모음"
 author: "jhkim593"
 tags: Algorithm
 ---
@@ -60,6 +60,162 @@ public class Main {
         return true;
     }
 
+}
+```
+</div>
+</details>
+
+<br>
+
+<details>
+<summary><strong>이모티콘</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/14226)
+
+<br>
+### 난이도 : ⭐⭐
+
+### 코드
+시간의 최솟값을 구해야하 하기 때문에 DFS를 사용했으며
+이모티콘 개수 , 버퍼 개수를 조합한 문자열을 Map 키로 저장해 중복 실행되지 않도록함
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int[] arr;
+    static int s;
+    static Queue<int[]> que = new LinkedList<>();
+    static int answer = 0;
+    static Map<String, String> map = new HashMap<>();
+    public static void main(String[] args) throws Exception{
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(bf.readLine());
+
+        s = Integer.parseInt(stz.nextToken());
+
+        que.add(new int[]{1,0,0});
+        bfs();
+        System.out.println(answer);
+
+    }
+    public static void bfs(){
+        while(!que.isEmpty()){
+            int []temp =que.poll();
+            int num = temp[0];
+            int count = temp[1];
+            int buffer = temp[2];
+
+            if(!checkKey(num,buffer)) continue;
+
+            if(num == s) {
+                answer = count;
+                return;
+            }
+
+            for(int i=0; i<3; i++){
+                if(i==0){
+                    if(num > 0){
+                        que.add(new int[]{num-1,count+1,buffer});
+                    }
+                } else if(i==1){
+                    if(buffer > 0){
+                        que.add(new int[]{num+buffer, count+1,buffer});
+                    }
+                } else if(i==2){
+                    if(num > 0){
+                        que.add(new int[]{num, count+1,num});
+                    }
+                }
+            }
+        }
+    }
+    public static boolean checkKey(int num, int buffer){
+        String key = num+"/"+buffer;
+        if(map.containsKey(key)) return false;
+        map.put(key,"");
+        return true;
+    }
+}
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary><strong>아기상어2</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/17086)
+
+<br>
+### 난이도 : ⭐⭐
+
+배열 크기가 최대 50*50이기 때문에 시간 문제는 없을 것같아 BFS 사용
+배열 요소가 0인 경우 1이 발견될 때까지 BFS로 최소 거리 구함
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int[] arr;
+    static int s;
+    static Queue<int[]> que = new LinkedList<>();
+    static int answer = 0;
+    static Map<String, String> map = new HashMap<>();
+    public static void main(String[] args) throws Exception{
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(bf.readLine());
+
+        s = Integer.parseInt(stz.nextToken());
+
+        que.add(new int[]{1,0,0});
+        bfs();
+        System.out.println(answer);
+
+    }
+    public static void bfs(){
+        while(!que.isEmpty()){
+            int []temp =que.poll();
+            int num = temp[0];
+            int count = temp[1];
+            int buffer = temp[2];
+
+            if(!checkKey(num,buffer)) continue;
+
+            if(num == s) {
+                answer = count;
+                return;
+            }
+
+            for(int i=0; i<3; i++){
+                if(i==0){
+                    if(num > 0){
+                        que.add(new int[]{num-1,count+1,buffer});
+                    }
+                } else if(i==1){
+                    if(buffer > 0){
+                        que.add(new int[]{num+buffer, count+1,buffer});
+                    }
+                } else if(i==2){
+                    if(num > 0){
+                        que.add(new int[]{num, count+1,num});
+                    }
+                }
+            }
+        }
+    }
+    public static boolean checkKey(int num, int buffer){
+        String key = num+"/"+buffer;
+        if(map.containsKey(key)) return false;
+        map.put(key,"");
+        return true;
+    }
 }
 ```
 </div>

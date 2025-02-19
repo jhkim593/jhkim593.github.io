@@ -62,7 +62,7 @@ public class Main{
 <summary><strong>용액</strong></summary>
 <div markdown="1">
 
-> [문제 링크](https://www.acmicpc.net/problem/1806)
+> [문제 링크](https://www.acmicpc.net/problem/2470)
 
 <br>
 ### 난이도 : ⭐
@@ -105,6 +105,64 @@ public class Main{
             } else break;
         }
         System.out.print(arr[saveStart] + " "+ arr[saveEnd]);
+    }
+}
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary><strong>소수의 연속합</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/1644)
+
+<br>
+### 난이도 : ⭐⭐
+
+`for (int j = 2; j * j <= i; j++)` 를 통해 소수를 구함
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+    public static void main(String [] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(stz.nextToken());
+        int []arr = new int[4000000];
+
+        int index = 0;
+        loop:
+        for(int i=2; i<=n; i++) {
+            for (int j = 2; j * j <= i; j++) {
+                if (i % j == 0) continue loop;
+            }
+            arr[index++] = i;
+        }
+
+        int start =0;
+        int end = 0;
+        int count =0;
+        int sum=0;
+        while(true){
+            if(sum <= n){
+                if(sum == n) count++;
+
+                if(arr[end] == 0){
+                    break;
+                }
+                sum+=arr[end++];
+            } else {
+                sum-=arr[start++];
+            }
+        }
+        System.out.println(count);
     }
 }
 ```
