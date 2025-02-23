@@ -220,3 +220,99 @@ public class Main {
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>숨바꼭질4</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/13913)
+
+<br>
+### 난이도 : ⭐⭐⭐
+
+위치는 0이상 100,000이하 이며 이미 방문한 지점은 다시 방문할 필요가 없음.
+history 배열을 생성해 history[i] i번째 이동하기 전 위치를 저장함.
+
+**주의**
+- String을 `+` 연산으로 이어 붙이게 되면 새로운 객체가 생성돼 메모리 사용 증가 , 성능 저하가 발생함을 간과  
+- StringBuilder를 사용해 추가 객체 생성안되도록 `append` 사용
+  - sb.append(s + " ")  (x)
+  - sb.append(s).append(" ") (o) 
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int s;
+    static int e;
+    static Queue<Integer> que = new LinkedList<>();
+    static boolean [] visited = new boolean[100001];
+    static int [] history = new int[100001];
+    public static void main(String[] args) throws Exception{
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(bf.readLine());
+        Deque<Integer> deque = new ArrayDeque<>();
+        s = Integer.parseInt(stz.nextToken());
+        e = Integer.parseInt(stz.nextToken());
+
+        Arrays.fill(history,-1);
+        que.add(s);
+        visited[s] = true;
+        bfs();
+
+        int count = 0;
+        int key = e;
+        deque.add(e);
+
+        while(true){
+            int value = history[key];
+            if(value == -1) {
+                count = deque.size() -1;
+                break;
+            }
+            key = value;
+            deque.add(value);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        while(!deque.isEmpty()){
+            sb.append(deque.pollLast()).append(' ');
+        }
+
+        System.out.println(count);
+        System.out.println(sb.toString());
+    }
+    public static void bfs(){
+        while(!que.isEmpty()){
+            int cur = que.poll();
+
+            if(cur == e){
+                return;
+            }
+
+            for(int i=0; i<3; i++){
+                int newCur = 0;
+                if(i==0){
+                    newCur = cur+1;
+                } else if(i==1){
+                    newCur = cur-1;
+                } else {
+                    newCur = cur*2;
+                }
+                if(newCur >= 0 && newCur <=100000 && !visited[newCur]){
+                    visited[newCur] = true;
+                    history[newCur] = cur;
+                    que.add(newCur);
+                }
+            }
+        }
+    }
+}
+```
+</div>
+</details>
