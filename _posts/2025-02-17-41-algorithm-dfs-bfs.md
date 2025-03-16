@@ -782,3 +782,100 @@ public class Solution {
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>공주님을 구해라!</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/17836)
+
+<br>
+### 난이도 : ⭐⭐
+
+그람이 있을 때 없을 때 체크를 위해 3차원 배열 생성 이동할 때 마다 동일하게 1시간씩 늘어나기 있기때문에 공주 위치 도달 시 바로 시간을 return 했음
+
+
+### 코드
+```java
+import java.util.*;
+public class Solution {
+    int[]tx={-1,0,0,1};
+    int[]ty={0,1,-1,0};
+    Queue<int[]> que;
+    int row = 0;
+    int col = 0;
+    int[][] arr;
+    int[][][] check;
+    public int solution(int[][] board) {
+        row = board.length;
+        col = board[0].length;
+        arr = board;
+        check = new int[row][col][4];
+
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                for(int k=0; k<4; k++){
+                    check[i][j][k] = -1;
+                }
+            }
+        }
+
+        que = new ArrayDeque<>();
+        que.add(new int[]{0,0,0,0});
+        que.add(new int[]{0,0,0,1});
+        que.add(new int[]{0,0,0,2});
+        que.add(new int[]{0,0,0,3});
+
+        check[0][0][0] = 0;
+        check[0][0][1] = 0;
+        check[0][0][2] = 0;
+        check[0][0][3] = 0;
+
+        bfs();
+
+        int answer = Integer.MAX_VALUE;
+        for(int i=0; i<4; i++){
+            System.out.println(check[row-1][col-1][i]);
+            if(answer > check[row-1][col-1][i]){
+                if(check[row-1][col-1][i]  == -1) continue;
+                answer = check[row-1][col-1][i];
+            }
+        }
+
+        return answer;
+    }
+    public void bfs(){
+        while(!que.isEmpty()){
+            int[] temp = que.poll();
+            int curRow = temp[0];
+            int curCol = temp[1];
+            int cost = temp[2];
+            int dir = temp[3];
+
+            if(curRow == row-1 && curCol == col-1) continue;
+            for(int i=0; i<4; i++){
+                int newRow = tx[i] + curRow;
+                int newCol = ty[i] + curCol;
+
+                if(newRow <0 || newCol <0 || newRow>=row || newCol >= col) continue;
+                if(arr[newRow][newCol] == 1) continue;
+
+                int newCost = 0;
+                if(dir == i) newCost = cost+100;
+                else newCost = cost+500+100;
+
+                if(check[newRow][newCol][dir] != -1 && check[newRow][newCol][dir] < newCost) continue;
+
+                check[newRow][newCol][dir] = newCost;
+                que.add(new int[]{newRow, newCol, newCost, i});
+
+            }
+        }
+    }
+}
+```
+</div>
+</details>
