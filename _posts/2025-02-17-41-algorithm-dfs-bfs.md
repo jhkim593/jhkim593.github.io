@@ -879,3 +879,151 @@ public class Solution {
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>움직이는 미로 탈출!</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/16954)
+
+<br>
+### 난이도 : ⭐⭐⭐
+
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+
+class Main {
+    static ArrayDeque<int[]> que = new ArrayDeque<>();
+    static char[][] arr = new char[8][8];
+    static int[][][] check = new int[8][8][8];
+    static int[] tx = {0 ,0, 1,-1,1,1 ,-1,-1,0};
+    static int[] ty = {1, -1,0,0,1,-1,1,-1,0};
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        for(int i=0; i< 8; i++){
+            StringTokenizer stz = new StringTokenizer(br.readLine());
+            String str = stz.nextToken();
+            for(int j=0; j<8; j++){
+                arr[i][j] = str.charAt(j);
+            }
+        }
+        que.add(new int[]{7,0,0});
+        System.out.println(bfs());
+    }
+    public static int bfs(){
+        while(!que.isEmpty()){
+            int[] temp = que.poll();
+            int x = temp[0];
+            int y = temp[1];
+            int time = temp[2];
+
+            if(x == 0 && y==7){
+                return 1;
+            }
+
+            int wall = time >= 8 ? 7 : time;
+
+            for(int i=0; i<9 ; i++){
+                int rx = x+tx[i];
+                int ry = y+ty[i];
+
+                if(i==7 && time >=8) continue;
+                if(rx <0 || ry <0 || rx>=8 || ry>= 8) continue;
+                if(rx -time>=0){
+                    if(arr[rx-time][ry]=='#') continue;
+                }
+                if(rx -(time+1)>=0){
+                    if(arr[rx-(time+1)][ry]=='#') continue;
+                }
+                if(check[rx][ry][wall] == 1) continue;
+                check[rx][ry][wall] = 1;
+                que.add(new int[]{rx,ry,time+1});
+
+            }
+        }
+        return  0;
+
+    }
+}
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary><strong>ABCDE</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/13023)
+
+<br>
+### 난이도 : ⭐⭐
+
+방문 배열을 초기화해서 각 정점에 dfs를 실행함
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+class Main{
+
+    static ArrayList<Integer>[] arr;
+    static int answer = 0;
+    static int[] visit;
+    public static void main(String[]args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(stz.nextToken());
+        int r = Integer.parseInt(stz.nextToken());
+
+        arr = new ArrayList[n];
+        visit = new int[n];
+        for(int i=0; i<n; i++){
+            arr[i] = new ArrayList<>();
+        }
+
+        for(int i=0; i<r; i++){
+            stz = new StringTokenizer(br.readLine());
+            int f1 = Integer.parseInt(stz.nextToken());
+            int f2 = Integer.parseInt(stz.nextToken());
+
+            arr[f1].add(f2);
+            arr[f2].add(f1);
+        }
+        for(int i=0; i<n;i++){
+            visit[i] = 1;
+            dfs(i,1);
+            visit[i] = 0;
+            if(answer == 1){
+                System.out.println(answer);
+                return;
+            }
+        }
+        System.out.println(answer);
+    }
+    public static void dfs(int idx, int count){
+        if(count == 5) {
+            answer = 1;
+            return;
+        }
+        for(int f : arr[idx]){
+            if(visit[f] == 1) continue;
+            visit[f] = 1;
+            dfs(f,count+1);
+            visit[f] = 0;
+        }
+    }
+}
+```
+</div>
+</details>

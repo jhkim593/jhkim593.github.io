@@ -445,3 +445,52 @@ public class Main{
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>동전1</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/2293)
+
+<br>
+### 난이도 : ⭐⭐⭐
+dp 배열을 선언하고 dp[i] i금액으로 만들 수 있는 경우의 수를 1번 동전부터 누적함
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    static int n,k;
+    public static void main(String[] args) throws IOException {
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(bf.readLine());
+
+        n = Integer.parseInt(stz.nextToken());
+        k = Integer.parseInt(stz.nextToken());
+        int []dp = new int[k+1];
+        int [] arr = new int[n+1];
+
+        for(int i=1;i<=n; i++){
+            stz = new StringTokenizer(bf.readLine());
+            arr[i] = Integer.parseInt(stz.nextToken());
+        }
+
+        dp[0] = 1;
+        for(int i=1; i<=n; i++){
+            int num = arr[i];
+            for(int j=num; j<=k; j++){
+                dp[j] = dp[j]+dp[j-num];
+            }
+        }
+        System.out.println(dp[k]);
+    }
+}
+
+```
+</div>
+</details>
