@@ -1027,3 +1027,127 @@ class Main{
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary>N과M(1)</summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/15649)
+
+<br>
+### 난이도 : ⭐
+
+방문 배열을 초기화해서 각 정점에 dfs를 실행함
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+
+class Main{
+    static int n,m;
+    static StringBuilder sb = new StringBuilder();
+    static int [] arr;
+    static int [] visit;
+    public static void main(String [] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(stz.nextToken());
+        m = Integer.parseInt(stz.nextToken());
+
+        visit = new int[n+1];
+        arr = new int[m];
+        dfs(0);
+        System.out.print(sb);
+    }
+    public static void dfs(int length){
+        if(length == m ){
+            for(int num : arr){
+                sb.append(num).append(" ");
+            }
+            sb.append("\n");
+        }
+        else{
+            for(int i=1; i<=n; i++){
+                if(visit[i] == 1) continue;
+                visit[i] = 1;
+                arr[length] = i;
+                dfs(length+1);
+                visit[i] = 0;
+            }
+        }
+    }
+
+}
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary>N과M(5)</summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/15654)
+
+<br>
+### 난이도 : ⭐
+
+방문 배열을 초기화해서 각 정점에 dfs를 실행함
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+
+class Main{
+    static int n,m;
+    static StringBuilder sb = new StringBuilder();
+    static int [] arr;
+    static int [] visit;
+    static int [] temp;
+    public static void main(String [] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(stz.nextToken());
+        m = Integer.parseInt(stz.nextToken());
+
+        stz = new StringTokenizer(br.readLine());
+        visit = new int[n];
+        temp = new int[m];
+        arr = new int[n];
+        for(int i=0; i<n; i++){
+            arr[i] = Integer.parseInt(stz.nextToken());
+        }
+        Arrays.sort(arr);
+        dfs(0);
+        System.out.println(sb);
+
+    }
+    public static void dfs(int length){
+        if(length == m){
+            for(int num : temp){
+                sb.append(num).append(" ");
+            }
+            sb.append("\n");
+        } else {
+            for(int i=0; i<arr.length; i++){
+                if(visit[i] == 1) continue;
+                visit[i] = 1;
+                temp[length] = arr[i];
+                dfs(length+1);
+                visit[i] = 0;
+            }
+        }
+    }
+}
+```
+</div>
+</details>
