@@ -1151,3 +1151,54 @@ class Main{
 ```
 </div>
 </details>
+
+<br>
+
+<details>
+<summary>부분수열의 합</summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/1182)
+
+<br>
+### 난이도 : ⭐⭐
+
+부분집합을 구하기위해 dfs를 수행함    
+만약 target이 0이면 공집합도 개수에 포함되기때문에 제외  
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main{
+    static int count,target,answer;
+    static int[] arr;
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        count = Integer.parseInt(stz.nextToken());
+        target = Integer.parseInt(stz.nextToken());
+
+        arr = new int[count];
+        stz = new StringTokenizer(br.readLine());
+        for(int i=0; i<count; i++){
+            arr[i] = Integer.parseInt(stz.nextToken());
+        }
+        dfs(0,0);
+        if(target == 0)answer--;
+        System.out.println(answer);
+    }
+    public static void dfs(int idx, int sum){
+        if(idx == count){
+            if(sum == target) answer++;
+            return;
+        }
+        dfs(idx+1,sum+arr[idx]);
+        dfs(idx+1,sum);    
+    }
+}
+```
+</div>
+</details>
