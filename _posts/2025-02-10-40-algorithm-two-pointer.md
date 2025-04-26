@@ -309,7 +309,7 @@ class Main{
 <br>
 
 <details>
-<summary><strong>겹치는 건 싫어/strong></summary>
+<summary><strong>겹치는 건 싫어</strong></summary>
 <div markdown="1">
 
 > [문제 링크](https://www.acmicpc.net/problem/20922)
