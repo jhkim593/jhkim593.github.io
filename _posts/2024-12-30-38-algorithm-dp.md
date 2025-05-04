@@ -13,6 +13,7 @@ hidden: true
 > [문제 링크](https://www.acmicpc.net/problem/15486)
 
 <br>
+
 ### 난이도 : ⭐
 
 dp[i]: i일에 퇴사할 때 얻을 수 있는 최대 금액값을 저장했다.
@@ -64,6 +65,7 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/1890)
 
 <br>
+
 ### 난이도 : ⭐
 
 dp 2차원 배열 선언 후 각 요소에 접근할 수 있는 경로 수를 저장했다.
@@ -116,6 +118,7 @@ public class Main{
 > [문제 링크](https://www.acmicpc.net/problem/15989)
 
 <br>
+
 ### 난이도 : ⭐⭐
 
 1, 2, 3 합을 구성할 때 순서가 관계 없기 때문에 **오름 차순 정렬**을 한다.  
@@ -177,6 +180,7 @@ public class Main{
 > [문제 링크](https://www.acmicpc.net/problem/1495)
 
 <br>
+
 ### 난이도 : ⭐⭐
 
 각 곡이 볼륨이 줄일건지 늘릴건지 2가지 경우가 있고 최대 곡 수가 50이기 때문에 최대 2<sup>50</sup> 연산이 수행된다. dp 2차원 배열의 값을 저장해 연산 수행을 줄였다.  
@@ -240,6 +244,7 @@ public class Main{
 > [문제 링크](https://www.acmicpc.net/problem/12026)
 
 <br>
+
 ### 난이도 : ⭐⭐
 이중 반복문을 돌아 dp[] 1차원 배열에 보도블럭을 밟았을 때 에너지 최솟값을 저장했다.
 
@@ -297,6 +302,7 @@ public class Main{
 > [문제 링크](https://www.acmicpc.net/problem/12865)
 
 <br>
+
 ### 난이도 : ⭐⭐⭐
 dp[i][j] 이차원 배열을 선언했고 i번째 물건까지 고려하고 j무게를 최대로 했을 때 가치의 최대값을 저장했다.
 예를들어 dp[3][2]는 3번째 물건까지 고려됐고 최대 무게가 2일 때 가치의 최대값을 나타낸다.
@@ -353,6 +359,7 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/11058)
 
 <br>
+
 ### 난이도 : ⭐⭐
 4가지 선택지가 있기 때문에 모두 탐색하게되면 최대 4<sup>100</sup> 연산을 수행해야한다.
 dp[i] 1차원 배열에 i번 눌렀을 때 출력되는 A의 최대값을 저장한다.  
@@ -402,6 +409,7 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/2616)
 
 <br>
+
 ### 난이도 : ⭐⭐⭐
 소형 기관차가 3대이기 때문에 최대 N<sup>3</sup> 연산을 수행해야한다.
 
@@ -456,6 +464,7 @@ public class Main{
 > [문제 링크](https://www.acmicpc.net/problem/2293)
 
 <br>
+
 ### 난이도 : ⭐⭐⭐
 dp 배열을 선언하고 dp[i] i금액으로 만들 수 있는 경우의 수를 1번 동전부터 누적함
 
@@ -505,6 +514,7 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/17485)
 
 <br>
+
 ### 난이도 : ⭐⭐⭐
 dp[i][j][k] 3차원 배열을 생성 k의 방향으로 i,j의 접근했을 때 최소값을 저장
 
@@ -574,7 +584,7 @@ public class Main {
 
 > [문제 링크](https://www.acmicpc.net/problem/9084)
 
-<br>
+<br  
 ### 난이도 : ⭐⭐⭐
 dp[i] 일차원 배열을 사용해 i원일 때 방법 수를 저장  
 dp[i] = dp[i] + dp[i-coin]; 이 점화식이며 dp[0] =1을 입력해 반복문 수행
@@ -631,6 +641,61 @@ public class Main {
             answer = Math.min(answer,Math.min(Math.min(dp[n-1][j][0],dp[n-1][j][1]),dp[n-1][j][2]));
         }
         System.out.println(answer);
+    }
+}
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary><strong>포도주 시식</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/2156)
+
+<br>
+
+### 난이도 : ⭐⭐
+dp[i] 배열을 선언해 i번째 포도주까지 고려시 최대양을 저장함  
+세개를 연속해서 먹을 수 없으므로 dp[i]은 다음과 같이 나타낼 수 있음
+- dp[i-1] 
+- dp[i-2] + arr[i]  
+- dp[i - 3] + arr[i - 1] + arr[i]
+
+dp[i-2] + arr[i]를 예로들면 dp[i-2]까지 어떻게든 최댓값를 구했다면 arr[i-1]을 건너뛰고 
+arr[i]를 더한 것이 연속 세번을 넘지 않기 때문에 후보가 됨
+
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(stz.nextToken());
+
+        int[] arr = new int[n + 1];
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            stz = new StringTokenizer(br.readLine());
+            arr[i] = Integer.parseInt(stz.nextToken());
+        }
+
+        for (int i = 1; i <= n; i++) {
+            if(i>=3){
+                dp[i] = Math.max(dp[i - 1], Math.max(dp[i - 2] + arr[i], dp[i - 3] + arr[i - 1] + arr[i]));
+            } else {
+                dp[i] = dp[i-1]+arr[i];
+            }
+        }
+        System.out.println(dp[n]);
     }
 }
 ```
