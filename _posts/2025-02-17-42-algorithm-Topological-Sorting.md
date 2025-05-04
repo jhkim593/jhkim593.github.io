@@ -214,3 +214,82 @@ class Main {
 ```
 </div>
 </details>
+
+<br>
+
+<details>
+<summary><strong>선수 과목</strong></summary>
+<div markdown="1">
+
+> [문제 링크]("https://www.acmicpc.net/problem/14567)
+
+<br>
+
+### 난이도 : ⭐⭐
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static Queue<int[]> que = new ArrayDeque<>();
+    static ArrayList<Integer> [] arr;
+    static int [] answer;
+    static int []degree;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(stz.nextToken());
+        int m = Integer.parseInt(stz.nextToken());
+
+        degree = new int[n+1];
+        arr = new ArrayList[n+1];
+        for(int i=1; i<=n; i++){
+            arr[i] = new ArrayList<>();
+        }
+
+
+        answer = new int[n+1];
+        for(int i=0; i<m; i++){
+            stz = new StringTokenizer(br.readLine());
+            int start = Integer.parseInt(stz.nextToken());
+            int end = Integer.parseInt(stz.nextToken());
+            if(arr[start] == null){
+                arr[start] = new ArrayList<>();
+            }
+            arr[start].add(end);
+
+            degree[end]++;
+        }
+        for(int i=1; i<=n; i++){
+            if(degree[i] == 0) que.add(new int[]{i,1});
+        }
+        bfs();
+
+        for(int i=1; i<=n;i++){
+            System.out.print(answer[i] + " ");
+        }
+    }
+    public static void bfs(){
+        while(!que.isEmpty()){
+            int [] temp = que.poll();
+            int target = temp[0];
+            int count = temp[1];
+
+            answer[target] = count;
+
+            for(int num: arr[target]){
+                degree[num]--;
+                if(degree[num] == 0){
+                    que.add(new int[]{num, count+1});
+                }
+            }
+        }
+    }
+}
+```
+</div>
+</details>
+
+
