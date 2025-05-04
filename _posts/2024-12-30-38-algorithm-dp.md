@@ -567,3 +567,72 @@ public class Main {
 </details>
 
 <br>
+
+<details>
+<summary><strong>동전</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/9084)
+
+<br>
+### 난이도 : ⭐⭐⭐
+dp[i] 일차원 배열을 사용해 i원일 때 방법 수를 저장  
+dp[i] = dp[i] + dp[i-coin]; 이 점화식이며 dp[0] =1을 입력해 반복문 수행
+
+### 코드
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int[] tx = {1,1,1};
+    static int[] ty = {0,1,-1};
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(stz.nextToken());
+        int m = Integer.parseInt(stz.nextToken());
+        int [][] arr = new int[n][m];
+        for(int i=0; i<n; i++){
+            stz = new StringTokenizer(br.readLine());
+            for(int j=0;j<m; j++){
+                arr[i][j] = Integer.parseInt(stz.nextToken());
+            }
+        }
+        int [][][]dp = new int[n][m][3];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                Arrays.fill(dp[i][j], Integer.MAX_VALUE);
+            }
+        }
+
+        for (int j = 0; j < m; j++) {
+            for (int d = 0; d < 3; d++) {
+                dp[0][j][d] = arr[0][j];
+            }
+        }
+        for(int i=0; i<n; i++){
+            for(int j=0;j<m; j++){
+                for(int k=0; k<3; k++){
+                    for(int l =0; l<3; l++){
+                        if(k == l) continue;
+                        int rx = i+tx[l];
+                        int ry = j+ty[l];
+                        if(ry<0 || rx <0 || rx>=n ||ry>=m ) continue;
+                        if(dp[i][j][k] != Integer.MAX_VALUE) dp[rx][ry][l] = Math.min(dp[rx][ry][l],dp[i][j][k] + arr[rx][ry]);
+                    }
+                }
+            }
+        }
+        int answer = Integer.MAX_VALUE;
+        for(int j=0;j<m; j++){
+            answer = Math.min(answer,Math.min(Math.min(dp[n-1][j][0],dp[n-1][j][1]),dp[n-1][j][2]));
+        }
+        System.out.println(answer);
+    }
+}
+```
+</div>
+</details>
