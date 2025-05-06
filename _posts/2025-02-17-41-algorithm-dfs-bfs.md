@@ -13,7 +13,8 @@ hidden: true
 > [문제 링크](https://www.acmicpc.net/problem/9663)
 
 <br>
-### 난이도 : ⭐⭐⭐
+
+ : ⭐⭐⭐
 
 ### 코드
 
@@ -75,7 +76,8 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/14226)
 
 <br>
-### 난이도 : ⭐⭐
+
+ : ⭐⭐
 
 ### 코드
 시간의 최솟값을 구해야하 하기 때문에 DFS를 사용했으며
@@ -153,7 +155,8 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/17086)
 
 <br>
-### 난이도 : ⭐⭐
+
+ : ⭐⭐
 
 배열 크기가 최대 50*50이기 때문에 시간 문제는 없을 것같아 BFS 사용
 배열 요소가 0인 경우 1이 발견될 때까지 BFS로 최소 거리 구함
@@ -232,7 +235,8 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/13913)
 
 <br>
-### 난이도 : ⭐⭐⭐
+
+ : ⭐⭐⭐
 
 위치는 0이상 100,000이하 이며 이미 방문한 지점은 다시 방문할 필요가 없음.
 history 배열을 생성해 history[i] i번째 이동하기 전 위치를 저장함.
@@ -328,7 +332,8 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/2206)
 
 <br>
-### 난이도 : ⭐⭐⭐
+
+ : ⭐⭐⭐
 
 방문 배열을 **3차원 배열**로 생성해서 벽을 뚫었을 떄와 안뚫었을 때를 각각 체크한다.
 boolean[i][j][k] visit 배열을 생성했으며 k가 0일 때는 벽을 뚫지 않은 상태 , 1일 때는 뚫은 상태를 의미한다.
@@ -412,7 +417,8 @@ public class Main{
 > [문제 링크](https://www.acmicpc.net/problem/6593)
 
 <br>
-### 난이도 : ⭐⭐
+
+ : ⭐⭐
 
 ### 코드
 ```java
@@ -514,7 +520,8 @@ public class Main {
 > [문제 링크](https://www.acmicpc.net/problem/2023)
 
 <br>
-### 난이도 : ⭐
+
+ : ⭐
 
 
 ### 코드
@@ -578,7 +585,8 @@ class Main {
 > [문제 링크](https://www.acmicpc.net/problem/16197)
 
 <br>
-### 난이도 : ⭐⭐
+
+ : ⭐⭐
 
 두 동전 위치를 한번에 저장하기 위해 4차원 배열을 생성해서 방문 체크를 수행함
 
@@ -695,7 +703,8 @@ class Main {
 > [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/67259?language=java)
 
 <br>
-### 난이도 : ⭐⭐
+
+ : ⭐⭐
 
 방향에 따라 비용이 달라지기 때문에 check[n][m][4] 3차원배열 생성해서 비용을 저장
 만약 check 배열 요소보다 비용이 크다면 더 이상 탐색할 필요가 없기 때문에 탐색 종료
@@ -793,7 +802,8 @@ public class Solution {
 > [문제 링크](https://www.acmicpc.net/problem/17836)
 
 <br>
-### 난이도 : ⭐⭐
+
+ : ⭐⭐
 
 그람이 있을 때 없을 때 체크를 위해 3차원 배열 생성 이동할 때 마다 동일하게 1시간씩 늘어나기 있기때문에 공주 위치 도달 시 바로 시간을 return 했음
 
@@ -890,7 +900,8 @@ public class Solution {
 > [문제 링크](https://www.acmicpc.net/problem/16954)
 
 <br>
-### 난이도 : ⭐⭐⭐
+
+ : ⭐⭐⭐
 
 
 ### 코드
@@ -967,7 +978,8 @@ class Main {
 > [문제 링크](https://www.acmicpc.net/problem/13023)
 
 <br>
-### 난이도 : ⭐⭐
+
+ : ⭐⭐
 
 방문 배열을 초기화해서 각 정점에 dfs를 실행함
 ### 코드
@@ -1038,7 +1050,8 @@ class Main{
 > [문제 링크](https://www.acmicpc.net/problem/15649)
 
 <br>
-### 난이도 : ⭐
+
+ : ⭐
 
 방문 배열을 초기화해서 각 정점에 dfs를 실행함
 ### 코드
@@ -1097,7 +1110,8 @@ class Main{
 > [문제 링크](https://www.acmicpc.net/problem/15654)
 
 <br>
-### 난이도 : ⭐
+
+ : ⭐
 
 방문 배열을 초기화해서 각 정점에 dfs를 실행함
 ### 코드
@@ -1161,6 +1175,7 @@ class Main{
 > [문제 링크](https://www.acmicpc.net/problem/1182)
 
 <br>
+
 ### 난이도 : ⭐⭐
 
 부분집합을 구하기위해 dfs를 수행함    
@@ -1198,6 +1213,73 @@ public class Main{
         dfs(idx+1,sum+arr[idx]);
         dfs(idx+1,sum);    
     }
+}
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary><strong>샘터</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/18513)
+
+<br>
+
+### 난이도 : ⭐⭐
+
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+public class Main {
+  static Queue<int[]> que = new ArrayDeque<>();
+  static long answer = 0;
+  static int count = 0;
+  static Map<Integer, Integer> map = new HashMap<>();
+  public static void main(String[] args) throws IOException {
+    BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer stz = new StringTokenizer(bf.readLine());
+
+    int n = Integer.parseInt(stz.nextToken());
+    int k = Integer.parseInt(stz.nextToken());
+
+    stz = new StringTokenizer(bf.readLine());
+    for(int i=0; i< n; i++){
+      int num = Integer.parseInt(stz.nextToken());
+      que.add(new int[]{num, 0});
+      map.put(num,0);
+    }
+
+    loop:
+    while(!que.isEmpty()){
+      int []temp = que.poll();
+      int cur =temp[0];
+      int dis = temp[1];
+
+      for(int i=0; i<2; i++){
+        int next = cur;
+        if(i==0){
+          next +=1;
+        } else{
+          next -=1;
+        }
+        if(-100000000>next || next>100000000) continue;
+        if(map.containsKey(next)) continue;
+
+        map.put(next,0);
+        count++;
+        answer+=(dis+1);
+        if(count == k) break loop;
+        que.add(new int[]{next,dis+1});
+      }
+    }
+    System.out.print(answer);
+  }
 }
 ```
 </div>

@@ -818,3 +818,125 @@ public class Main{
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>스티커 *</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/10844)
+
+<br>
+
+### 난이도 : ⭐⭐
+dp[i][j] 
+- j열의 위 스티커를 선택했을 때 최대값 i =1
+- j열의 아래 스티커를 선택했을 때 최대값 i = 0  
+
+0 3 0 4   
+0 1 2 0  
+만약 4에 해당하는 최대값을 구한다고 하면 1,2을 기준으로 최대값을 구하면된다. 3은 포함하지 않아도 되는 이유는 2에 최대값에 포함이 되기 때문
+
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+    static StringBuilder sb = new StringBuilder();
+    public static void main(String []args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        int t = Integer.parseInt(stz.nextToken());
+        for(int i=0; i<t; i++){
+            stz = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(stz.nextToken());
+
+            int [][] arr = new int[2][n+1];
+            for(int j=0; j<2; j++){
+                stz = new StringTokenizer(br.readLine());
+                for(int k=1; k<=n; k++){
+                    arr[j][k] = Integer.parseInt(stz.nextToken());
+                }
+            }
+            int [][] dp = new int[2][n+1];
+            dp[0][1] = arr[0][1];
+            dp[1][1] = arr[1][1];
+            for(int j=2; j<=n; j++){
+                dp[0][j] = Math.max(dp[1][j-1],dp[1][j-2])+arr[0][j];
+                dp[1][j] = Math.max(dp[0][j-1],dp[0][j-2])+arr[1][j];
+            }
+            sb.append(Math.max(dp[0][n],dp[1][n])).append("\n");
+        }
+        System.out.print(sb.toString());
+    }
+}
+
+```
+</div>
+</details>
+
+
+<br>
+
+<details>
+<summary><strong>스티커 *</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/10844)
+
+<br>
+
+### 난이도 : ⭐⭐
+dp[i][j]
+- j열의 위 스티커를 선택했을 때 최대값 i =1
+- j열의 아래 스티커를 선택했을 때 최대값 i = 0
+
+0 3 0 4   
+0 1 2 0  
+만약 4에 해당하는 최대값을 구한다고 하면 1,2을 기준으로 최대값을 구하면된다. 3은 포함하지 않아도 되는 이유는 2에 최대값에 포함이 되기 때문
+
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+    static StringBuilder sb = new StringBuilder();
+    public static void main(String []args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        int t = Integer.parseInt(stz.nextToken());
+        for(int i=0; i<t; i++){
+            stz = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(stz.nextToken());
+
+            int [][] arr = new int[2][n+1];
+            for(int j=0; j<2; j++){
+                stz = new StringTokenizer(br.readLine());
+                for(int k=1; k<=n; k++){
+                    arr[j][k] = Integer.parseInt(stz.nextToken());
+                }
+            }
+            int [][] dp = new int[2][n+1];
+            dp[0][1] = arr[0][1];
+            dp[1][1] = arr[1][1];
+            for(int j=2; j<=n; j++){
+                dp[0][j] = Math.max(dp[1][j-1],dp[1][j-2])+arr[0][j];
+                dp[1][j] = Math.max(dp[0][j-1],dp[0][j-2])+arr[1][j];
+            }
+            sb.append(Math.max(dp[0][n],dp[1][n])).append("\n");
+        }
+        System.out.print(sb.toString());
+    }
+}
+
+```
+</div>
+</details>
