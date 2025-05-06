@@ -701,3 +701,120 @@ public class Main {
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>징검다리 건너기</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/21317)
+
+<br>
+
+### 난이도 : ⭐⭐
+dp[i][j] dp 2차원 배열을 선언해서 i번째 징검다리에 도착했을 때 최소 에너지값 , j는 매우 큰 점프 사용 여부를 저장
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+    public static void main(String []args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(stz.nextToken());
+
+        ArrayList<Integer>[] arr = new ArrayList[n];
+        for(int i=0; i<n-1; i++){
+            stz = new StringTokenizer(br.readLine());
+
+            ArrayList<Integer> list = new ArrayList<>();
+            int e = Integer.parseInt(stz.nextToken());
+            int be = Integer.parseInt(stz.nextToken());
+            list.add(e);
+            list.add(be);
+            arr[i+1] = list;
+        }
+        stz = new StringTokenizer(br.readLine());
+        int vbe = Integer.parseInt(stz.nextToken());
+
+        int [][] dp =new int[n+1][2];
+        for(int i=0; i<dp.length; i++){
+            Arrays.fill(dp[i],Integer.MAX_VALUE);
+        }
+
+        dp[1][0] = 0;
+        dp[1][1] = 0;
+        for(int i=1; i<=n; i++){
+            if(i-1 >=1) {
+                dp[i][0] = Math.min(dp[i][0],dp[i-1][0] + arr[i-1].get(0));
+                dp[i][1] = Math.min(dp[i][1],dp[i-1][1] + arr[i-1].get(0));
+            }
+            if(i-2 >=1) {
+                dp[i][0] = Math.min(dp[i][0],dp[i-2][0] + arr[i-2].get(1));
+                dp[i][1] = Math.min(dp[i][1],dp[i-2][1] + arr[i-2].get(1));
+            }
+            if(i-3 >=1) {
+                dp[i][1] = Math.min(dp[i][1],dp[i-3][0] + vbe);
+            }
+        }
+        System.out.println(Math.min(dp[n][0],dp[n][1]));
+    }
+}
+```
+</div>
+</details>
+
+
+
+<br>
+
+<details>
+<summary><strong>쉬운 계단 수</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/10844)
+
+<br>
+
+### 난이도 : ⭐⭐
+완전 탐색시 최대 2<sup>100</sup>의 연산을 수행함  
+dp[i][j]에 길이가 i이고 j로 끝나는 계단 수를 저장
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+    public static void main(String []args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        int n = Integer.parseInt(stz.nextToken());
+
+        long [][]dp = new long[n+1][10];
+
+        for(int i=1; i<=9; i++){
+            dp[1][i] =1;
+        }
+
+        for(int i=2; i<=n; i++){
+            for(int j=0; j<=9; j++){
+                if(j-1 >= 0) dp[i][j] = (dp[i][j] + dp[i-1][j-1])%1000000000;
+                if(j+1 <=9) dp[i][j] = (dp[i][j] + dp[i-1][j+1])%1000000000;
+            }
+        }
+        long answer = 0;
+        for(int i=0; i<=9; i++){
+            answer = (answer + dp[n][i]) %1000000000;
+        }
+        System.out.println(answer);
+    }
+}
+```
+</div>
+</details>
