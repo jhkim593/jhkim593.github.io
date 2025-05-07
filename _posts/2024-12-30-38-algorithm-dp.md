@@ -584,7 +584,8 @@ public class Main {
 
 > [문제 링크](https://www.acmicpc.net/problem/9084)
 
-<br  
+<br>
+
 ### 난이도 : ⭐⭐⭐
 dp[i] 일차원 배열을 사용해 i원일 때 방법 수를 저장  
 dp[i] = dp[i] + dp[i-coin]; 이 점화식이며 dp[0] =1을 입력해 반복문 수행
