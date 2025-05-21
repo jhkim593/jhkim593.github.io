@@ -37,15 +37,17 @@ tags: redis
 
 ## 요구사항
 이제 아래 요구 사항을 기반으로 선착순 쿠폰 발급 로직을 구현해보도록 하겠습니다. 요구사항은 다음과 같습니다.
-- 선착순 쿠폰이 3000개 제한이며 그 이상 발급 될 수 없음
-- 사용자당 쿠폰 한개씩만 발급 받을 수 있음
+
+>- 선착순 쿠폰이 3000개 제한이며 그 이상 발급 될 수 없음  
+>- 사용자당 쿠폰 한개씩만 발급 받을 수 있음
 
 요구사항을 만족하기 위해 redis Set 자료형을 사용했습니다. Set에 저장되는 값은 중복 발급 체크를 위한 사용자 식별값이 될것 이며 발급된 쿠폰 수는 Set의 저장된 value 크기로 확인할 수 있습니다. 발급 로직을 정리하면 다음과 같습니다.
 - Set의 저장된 value 크기로 초과 발급 확인 
-- Set의 저장된 value를 통해 중복 발급된 확인 
+- Set의 저장된 value를 통해 중복 발급 확인 
 - 쿠폰 발급
 
 <br>
+
 ## 동시성 처리시 문제 상황
 
 하지만 redis를 사용하기만 하면 동시성 문제가 해결되는 것은 아닌데 만약 두 사용자가 동시에 쿠폰 발급 요청을 했을 경우를 살펴보겠습니다.
@@ -68,7 +70,7 @@ tags: redis
 잔여 수량 및 중복 발급 조회, 쿠폰 발급 명령을 묶어서 처리하게되면 여러 사용자가 동시에 요청해도 쿠폰 수량의 정합성을 보장받을 수 있게됩니다.. redis에서 여러 명령을 하나로 묶어서 처리하는 방법에는 대표적으로 redis transaction , lua script가 있습니다.
 
 <br>
-#### redis Transaction
+## redis Transaction
 
 redis는 transaction 처리를 위해 여러 명령어를 제공하며 기본 동작은 다음과 같습니다.
 
@@ -98,13 +100,44 @@ redis에 실제로 커맨드를 날려보면 transaction내부에서는 읽기 �
 선착순 쿠폰 시스템에서는 **transaction 내부**에서 잔여 수량 및 중복 발급 확인을 위한 조회가 필요하기 때문에 해당 방식은 사용할 수 없었습니다.
 
 <br>
-#### redis lua script
+
+## redis lua script
 
 lua script는 redis에서 l**ua 언어를 사용해 작성된 스크립트**를 실행하는 기능입니다.
 
-여러 명령어를 lua 스크립트로 묶어 실행하면, **중간에 다른 클라이언트가 개입할 수 없는 원자적 실행**이 가능하기 때문에 해당 방식을 선택했으며 자세한 구현은 아래에서 다루도록 하겠습니다.
+여러 명령어를 lua 스크립트로 묶어 실행하면, **중간에 다른 클라이언트가 개입할 수 없는 원자적 실행**이 가능하게됩니다.
 redis Transaction과 다르게 transaction 내부에서 데이터를 조회할 수 있으며 spring-data-redis lua script 사용을 지원하기 때문에 해당 방법을 선택했습니다.
 
+lua script 기본 동작은 다음과 같습니다.
+#### EVAL 
+redis에 스크립트를 보내 실행하는 명령어입니다.
+```redis
+EVAL "<script>" <numkeys> <key1> <key2> ... <arg1> <arg2> ...
+```
+- script : 실행할 Lua 스크립트 문자열
+- numkeys : 키의 개수
+- key1 , key2 ... : Lua에서 KEYS[1], KEYS[2] 등으로 접근
+- arg1, arg2 ... : Lua에서 ARGV[1], ARGV[2] 등으로 접근
+
+redis-cli를 사용해 간단하게 명령어를 실행해보겠습니다.
+```redis
+EVAL "redis.call('set', KEYS[1], ARGV[1]); return redis.call('get', KEYS[1])" 1 key1 value1
+```
+- `redis.call`을 통해 redis 명령어를 실행
+-  KEYS[1]을 통해 첫번째 키인 key1에 접근 , ARGV[1]을 통해 첫번째 인자인 value1에 접근
+-  set을 통해 key1=value1 저장 , get을 통해 key1의 value 값을 조회함으로 최종적으로 value1이 리턴
+
+
+#### EVALSHA
+redis에 스크립트가 아닌 해시 값을 보내 redis에 캐싱된 스크립트를 실행하는 명령어입니다.
+매번 스크립트를 전송할 필요가 없기 때문에 네트워크 전송속도가 향상됩니다.
+```redis
+EVALSHA <sha1> <numkeys> <key1> <key2> ... <arg1> <arg2> ...
+```
+script 문자열을 받는 대신 sha1 해시값을 받고 이외 동작은 동일합니다.
+
+여기서 한 가지 살펴볼만한 내용이 있는데요, EVAL 명령어를 실행해도 스크립트가 캐시 된다는 점입니다. 물론 이를 사용하기 위해서는 SCRIPT LOAD 명령어로 스크립트를 로드해 해시 값을 얻어야 하지만요. 여튼 이렇게 생성된 해시 값은 EVALSHA 명령어를 사용할 때, 해당 스크립트를 더 효율적으로 실행할 수 있게 해줍니다.
+spring-data-redis DefaultScriptExecutor 기본동작은 EVALSHA로 먼저 캐싱된 스크립트가 있는지 확인 후 실행하고 없다면 EVAL 명령어로 스크립트를 전송해 실행되도록 동작합니다.
 
 
 ## 선착순 쿠폰 발급 로직 구현 코드
