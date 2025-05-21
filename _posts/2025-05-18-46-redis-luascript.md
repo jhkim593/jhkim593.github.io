@@ -97,16 +97,13 @@ QUEUED
 3) "value2"
 ```
 redis에 실제로 커맨드를 날려보면 transaction내부에서는 읽기 명령이어도 전부 QUEUED를 반환하는것을 알수 있습니다. 
-선착순 쿠폰 시스템에서는 **transaction 내부**에서 잔여 수량 및 중복 발급 확인을 위한 조회가 필요하기 때문에 해당 방식은 사용할 수 없었습니다.
+선착순 쿠폰 시스템에서는 **transaction 내부**에서 잔여 수량 및 중복 발급 확인을 위한 조회가 필요하기 때문에 이 방식은 사용할 수 없었습니다.
 
 <br>
 
 ## redis lua script
 
-lua script는 redis에서 l**ua 언어를 사용해 작성된 스크립트**를 실행하는 기능입니다.
-
-여러 명령어를 lua 스크립트로 묶어 실행하면, **중간에 다른 클라이언트가 개입할 수 없는 원자적 실행**이 가능하게됩니다.
-redis Transaction과 다르게 transaction 내부에서 데이터를 조회할 수 있으며 spring-data-redis lua script 사용을 지원하기 때문에 해당 방법을 선택했습니다.
+lua script는 redis에서 **lua 언어를 사용해 작성된 스크립트를 실행하는 기능**입니다. 여러 명령어를 lua 스크립트로 묶어서 실행하기때문에 **중간에 다른 클라이언트가 개입할 수 없는 원자적 실행**이 가능하게됩니다.
 
 lua script 기본 동작은 다음과 같습니다.
 #### EVAL 
@@ -119,13 +116,14 @@ EVAL "<script>" <numkeys> <key1> <key2> ... <arg1> <arg2> ...
 - key1 , key2 ... : Lua에서 KEYS[1], KEYS[2] 등으로 접근
 - arg1, arg2 ... : Lua에서 ARGV[1], ARGV[2] 등으로 접근
 
-redis-cli를 사용해 간단하게 명령어를 실행해보겠습니다.
+redis-cli를 사용해 명령어를 실행해보겠습니다.
 ```redis
-EVAL "redis.call('set', KEYS[1], ARGV[1]); return redis.call('get', KEYS[1])" 1 key1 value1
+> EVAL "redis.call('set', KEYS[1], ARGV[1]); return redis.call('get', KEYS[1])" 1 key1 value1
+"value1"
 ```
 - `redis.call`을 통해 redis 명령어를 실행
--  KEYS[1]을 통해 첫번째 키인 key1에 접근 , ARGV[1]을 통해 첫번째 인자인 value1에 접근
--  set을 통해 key1=value1 저장 , get을 통해 key1의 value 값을 조회함으로 최종적으로 value1이 리턴
+-  KEYS[1]을 통해 첫번째 키인 "key1"에 사용 ARGV[1]을 통해 첫번째 인자인 "value1"에 사용
+-  set을 통해 key1:value1 저장 , get을 통해 최종적으로 value1이 리턴
 
 
 #### EVALSHA
@@ -136,13 +134,36 @@ EVALSHA <sha1> <numkeys> <key1> <key2> ... <arg1> <arg2> ...
 ```
 script 문자열을 받는 대신 sha1 해시값을 받고 이외 동작은 동일합니다.
 
-여기서 한 가지 살펴볼만한 내용이 있는데요, EVAL 명령어를 실행해도 스크립트가 캐시 된다는 점입니다. 물론 이를 사용하기 위해서는 SCRIPT LOAD 명령어로 스크립트를 로드해 해시 값을 얻어야 하지만요. 여튼 이렇게 생성된 해시 값은 EVALSHA 명령어를 사용할 때, 해당 스크립트를 더 효율적으로 실행할 수 있게 해줍니다.
+redis-cli에서 스크립트를 캐싱하고 반환된 해시 값을 사용해 스크립트를 실행해보도록 하겠습니다.
+스크립트를 redis에 캐싱하기 위해서는 `SCRIPT LOAD` 명령어를 사용하면됩니다. 
+
+```
+> SCRIPT LOAD "redis.call('set', KEYS[1], ARGV[1]); return redis.call('get', KEYS[1])"
+"5afd00504d9d21a8fc37cd1b4400872d2e69296a"
+```
+명령어 실행 후 "5afd00504d9d21a8fc37cd1b4400872d2e69296a" 해시값이 반환되었습니다. 이제 해시값을 사용해 스크립트를 실행해보겠습니다.
+
+```
+> EVALSHA 5afd00504d9d21a8fc37cd1b4400872d2e69296a 1 key1 value1
+"value1"
+```
+`EVALSHA` 명령어로 해시값을 전달해 실행하면 마찬가지로 "value1"이 반환되는 것을 확인할 수 있습니다.
+
+추가로 EVAL 명령어를 사용해도 해시값이 반환되지는 않지만 스크립트가 자동으로 캐싱됩니다. SHA1 해시값이 있다면 이후에는 EVALSHA 명령어로 스크립트를 실행할 수 있습니다.
+redis Transaction과 다르게 transaction 내부에서 데이터를 조회할 수 있었으며 `spring-boot-starter-data-redis` 라이브러리가 lua script 사용을 지원하기 때문에 이 방식을 선택해 구현했습니다.
 spring-data-redis DefaultScriptExecutor 기본동작은 EVALSHA로 먼저 캐싱된 스크립트가 있는지 확인 후 실행하고 없다면 EVAL 명령어로 스크립트를 전송해 실행되도록 동작합니다.
 
 
 ## 선착순 쿠폰 발급 로직 구현 코드
 
 redis lua script를 사용한 쿠폰 발급 처리 로직 및 테스트 코드를 구현했습니다. RDB , MessageQueue 등 다른 시스템과의 연동 코드는 이번글에서 다루지 않았습니다.
+
+build.gradle
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+```
+
+
 
 CouponRepository.java
 
