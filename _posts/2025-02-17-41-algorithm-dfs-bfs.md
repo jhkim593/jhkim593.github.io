@@ -1284,3 +1284,104 @@ public class Main {
 ```
 </div>
 </details>
+
+
+
+<br>
+
+<details>
+<summary><strong>연산자 끼워넣기(3)</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/15659)
+
+<br>
+
+### 난이도 : ⭐⭐⭐
+사칙연산 계산시 ArrayDeque를 활용
+- * , /는 먼저 큐에 마지막으로 들어간 값과 계산
+* 이후에 + , -를 계산
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+public class Main {
+  static int []arr;
+  static int []opr;
+  static int max = Integer.MIN_VALUE;
+  static int min = Integer.MAX_VALUE;
+  static int n;
+  static int []curOpr;
+  public static void main(String[] args) throws IOException {
+    BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer stz = new StringTokenizer(bf.readLine());
+
+    n = Integer.parseInt(stz.nextToken());
+
+    arr = new int[n];
+    stz = new StringTokenizer(bf.readLine());
+    for(int i=0; i<n; i++){
+      arr[i] = Integer.parseInt(stz.nextToken());
+    }
+
+    opr = new int[4];
+    stz = new StringTokenizer(bf.readLine());
+    for(int i=0; i<4; i++){
+      opr[i] = Integer.parseInt(stz.nextToken());
+    }
+
+    curOpr = new int[n-1];
+    dfs(0);
+    System.out.println(max);
+    System.out.println(min);
+  }
+  public static void dfs(int idx){
+    if(idx == n-1) {
+      max = Math.max(cal(),max);
+      min = Math.min(cal(),min);
+      return;
+    }
+    for(int i=0; i<4; i++){
+      if(opr[i] == 0) continue;
+
+      curOpr[idx] = i+1;
+
+      opr[i]--;
+      dfs(idx+1);
+      opr[i]++;
+    }
+
+  }
+  public static int cal(){
+    ArrayDeque<Integer>numQue = new ArrayDeque<>();
+    ArrayDeque<Integer>oprQue = new ArrayDeque<>();
+
+    numQue.add(arr[0]);
+    for(int i=0; i<n-1; i++){
+      if(curOpr[i] == 3){
+        numQue.add((numQue.pollLast() * arr[i+1]));
+      } else if(curOpr[i] == 4){
+        numQue.add((numQue.pollLast() / arr[i+1]));
+      } else {
+        numQue.add(arr[i+1]);
+        oprQue.add(curOpr[i]);
+      }
+    }
+    int sum = numQue.poll();
+    while(!oprQue.isEmpty()){
+      int temp = oprQue.poll();
+      if(temp == 1){
+        sum +=numQue.poll();
+      }
+      else {
+        sum-=numQue.poll();
+      }
+    }
+    return sum;
+  }
+}
+
+```
+</div>
+</details>

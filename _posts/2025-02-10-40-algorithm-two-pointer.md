@@ -179,49 +179,50 @@ public class Main{
 > [문제 링크](https://www.acmicpc.net/problem/22862)
 
 <br>
+
 ### 난이도 : ⭐⭐
 
-end 시점을 미리 올려서 처리
+- count는 현재 제거된 홀수 개수인데 count가 k이고 arr[end] (다음 숫자)가 홀수이면 더 이상 end를 늘리지 않고 start늘리도록함
 ### 코드
 ```java
 import java.util.*;
 import java.io.*;
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(bf.readLine());
 
-public class Main{
-    public static void main(String [] args) throws Exception{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer stz = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(stz.nextToken());
-        int []arr = new int[4000000];
+        int s = Integer.parseInt(stz.nextToken());
+        int k = Integer.parseInt(stz.nextToken());
 
-        int index = 0;
-        loop:
-        for(int i=2; i<=n; i++) {
-            for (int j = 2; j * j <= i; j++) {
-                if (i % j == 0) continue loop;
-            }
-            arr[index++] = i;
+        int []arr = new int[s];
+        stz = new StringTokenizer(bf.readLine());
+        for(int i=0; i<s;i++){
+            arr[i] = Integer.parseInt(stz.nextToken());
         }
-
-        int start =0;
+        int start = 0;
         int end = 0;
-        int count =0;
-        int sum=0;
-        while(true){
-            if(sum <= n){
-                if(sum == n) count++;
 
-                if(arr[end] == 0){
-                    break;
+        int count = 0;
+        int max = 0;
+        while(end < s){
+            if(count == k && arr[end] % 2 != 0){
+                if(arr[start] % 2 != 0) {
+                    count--;
                 }
-                sum+=arr[end++];
-            } else {
-                sum-=arr[start++];
+                start++;
+                continue;
             }
+            if(arr[end] % 2 != 0 ){
+                count++;
+            }
+            end++;
+            max = Math.max(max ,end-start-count);
         }
-        System.out.println(count);
+        System.out.println(max);
     }
 }
+
 ```
 </div>
 </details>
