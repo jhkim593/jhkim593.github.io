@@ -238,7 +238,7 @@ kubectl taint nodes node2 key2=value2:NoExecute
 <img src="/assets/images/19/3.png"  width="800" height="100"/>
 
 <br>
-**테인트가 일치하지만** effect가 NoExecute이고 **tolerationSeconds가 30초**로 설정된 nginx2는 30초 뒤에 종료된 것을 확인 할 수 있습니다.
+**테인트가 일치하지만** effect가 NoExecute이고 **tolerationSeconds가 30초**로 설정된 nginx1는 30초 뒤에 종료된 것을 확인 할 수 있습니다.
 
 <img src="/assets/images/19/4.png"  width="800" height="100"/>
 
