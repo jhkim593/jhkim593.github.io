@@ -2,7 +2,7 @@
 layout: post
 title: "Spring Custom Annotation"
 author: "jhkim593"
-tags: Spring
+tags: SpringBoot
 
 ---
 

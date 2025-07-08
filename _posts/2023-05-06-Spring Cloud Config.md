@@ -2,7 +2,7 @@
 layout: post
 title: "Spring Cloud (3) - Config Server / Client"
 author: "jhkim593"
-tags: Spring
+tags: SpringBoot
 
 ---
 >관련 코드는 [github](https://github.com/jhkim593/blog_code/tree/master/spring_cloud/cloud-config)를 참고해주세요

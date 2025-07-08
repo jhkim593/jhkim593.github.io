@@ -2,7 +2,7 @@
 layout: post
 title: "Spring Cloud (2) - Eureka , API Gateway "
 author: "jhkim593"
-tags: Spring
+tags: SpringBoot
 
 ---
 

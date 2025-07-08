@@ -2,7 +2,7 @@
 layout: post
 title: "Mockito (3) - verify , BDD"
 author: "jhkim593"
-tags: SpringBoot
+tags: TEST
 
 ---
 ## verify
