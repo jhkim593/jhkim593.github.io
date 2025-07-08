@@ -1385,3 +1385,77 @@ public class Main {
 ```
 </div>
 </details>
+
+
+<br>
+
+<details>
+<summary><strong>암호 만들기</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/1759)
+
+<br>
+
+### 난이도 : ⭐⭐
+
+dfs 완전 탐색으로 해결  
+char 배열인 answer를 정의해서 사용
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+  static int c,n;
+  static char [] arr;
+  static List<String> list = new ArrayList<>();
+  static char[] answer;
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer stz = new StringTokenizer(br.readLine());
+
+    c = Integer.parseInt(stz.nextToken());
+    n = Integer.parseInt(stz.nextToken());
+
+    stz = new StringTokenizer(br.readLine());
+    arr = new char[n];
+    answer = new char[c];
+    for (int i=0; i<n; i++) {
+      arr[i] = stz.nextToken().charAt(0);
+    }
+    Arrays.sort(arr);
+    dfs(0,0);
+    for (String str : list) {
+      System.out.println(str);
+    }
+  }
+  static void dfs(int idx, int count){
+    if(count == c){
+      String secret = new String(answer);
+      if (check(secret)) {
+        list.add(secret);
+      }
+      return;
+    }
+    for(int i=idx; i<n; i++){
+      answer[count] = arr[i];
+      dfs(i+1, count+1);
+    }
+  }
+  static boolean check(String str){
+    int count1 = 0;
+    int count2 = 0;
+    for (char c : str.toCharArray()) {
+      if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') count1++;
+      else count2++;
+      if(count1 >= 1 && count2 >= 2) return true;
+    }
+    return false;
+  }
+}
+```
+</div>
+</details>
+
