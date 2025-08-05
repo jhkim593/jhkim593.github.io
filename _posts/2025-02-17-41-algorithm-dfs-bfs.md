@@ -1459,3 +1459,66 @@ public class Main {
 </div>
 </details>
 
+
+<br>
+
+<details>
+<summary><strong>경로 찾기</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/11403)
+
+<br>
+
+### 난이도 : ⭐⭐
+
+dfs 완전 탐색으로 해결
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+  static int n;
+  static int[]visited;
+  static int [][] arr;
+  static int [][] answer;
+  public static void main(String[] args) throws Exception{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    StringTokenizer stz = new StringTokenizer(br.readLine());
+
+    n = Integer.parseInt(stz.nextToken());
+    arr = new int[n][n];
+    answer = new int[n][n];
+    for(int i=0; i<n; i++){
+      stz = new StringTokenizer(br.readLine());
+      for(int j =0; j<n; j++){
+        visited = new int[n];
+        arr[i][j] = Integer.parseInt(stz.nextToken());
+      }
+    }
+    for(int i=0; i<n; i++){
+      dfs(i,i);
+    }
+    for(int i=0; i<n; i++){
+      for(int j =0; j<n; j++){
+        System.out.print(answer[i][j]+" ");
+      }
+      System.out.println("");
+    }
+  }
+  public static void dfs(int start, int num){
+    for(int i =0; i<n; i++){
+      int temp = arr[num][i];
+      if(temp == 1 && visited[i] == 0){
+        visited[i] =1;
+        answer[start][i] = 1;
+        dfs(start,i);
+      }
+    }
+  }
+}
+```
+</div>
+</details>
+
