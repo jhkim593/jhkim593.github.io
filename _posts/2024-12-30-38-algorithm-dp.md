@@ -884,3 +884,52 @@ public class Main{
 
 <br>
 
+
+<details>
+<summary><strong>1, 2, 3 더하기 8</strong></summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/problem/15993)
+
+<br>
+
+### 난이도 : ⭐⭐
+
+1, 2 , 3 규칙을 보면 dp[i] = dp[i-1] + dp[i-2] + dp[i-3]를 확인할 있음   
+하지만 홀수와 짝수 규칙을 알 수 없기 때문에 dp[i][0]과 dp[i][1]을 선언해 홀수와 짝수를 구분
+자료형은 최대 30억이므로 long으로 선언
+
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+    public static void main(String[] args) throws Exception{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer stz = new StringTokenizer(br.readLine());
+
+        int t = Integer.parseInt(stz.nextToken());
+        StringBuilder sb = new StringBuilder();
+
+        long [][] dp = new long[100001][2];
+        dp[1][1] = 1;
+        dp[2][0]  = 1;
+        dp[2][1] = 1;
+        dp[3][0]  = 2;
+        dp[3][1] = 2;
+        for(int j=4; j<=100000; j++){
+            dp[j][0] = (dp[j-3][1] + dp[j-2][1] + dp[j-1][1]) % 1000000009;
+            dp[j][1] = (dp[j-3][0] + dp[j-2][0] + dp[j-1][0]) % 1000000009;
+        }
+        for(int i=0; i<t; i++){
+            stz = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(stz.nextToken());
+            sb.append(dp[n][1]).append(" ").append(dp[n][0]).append("\n");
+        }
+        System.out.println(sb);
+    }
+}
+```
+</div>
+</details>
