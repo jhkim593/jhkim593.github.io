@@ -1460,19 +1460,20 @@ public class Main {
 </details>
 
 
+
 <br>
 
 <details>
-<summary><strong>경로 찾기</strong></summary>
+<summary>로또</summary>
 <div markdown="1">
 
-> [문제 링크](https://www.acmicpc.net/problem/11403)
+> [문제 링크](https://www.acmicpc.net/submit/6603/97305097)
 
 <br>
 
 ### 난이도 : ⭐⭐
 
-dfs 완전 탐색으로 해결
+dfs를 통해 부분집함을 구해 해결
 ### 코드
 ```java
 import java.util.*;
@@ -1480,42 +1481,36 @@ import java.io.*;
 
 public class Main{
   static int n;
-  static int[]visited;
-  static int [][] arr;
-  static int [][] answer;
+  static int[] check = new int[6];
+  static StringBuilder sb = new StringBuilder();
+  static int[]arr;
   public static void main(String[] args) throws Exception{
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    StringTokenizer stz = new StringTokenizer(br.readLine());
-
-    n = Integer.parseInt(stz.nextToken());
-    arr = new int[n][n];
-    answer = new int[n][n];
-    for(int i=0; i<n; i++){
-      stz = new StringTokenizer(br.readLine());
-      for(int j =0; j<n; j++){
-        visited = new int[n];
-        arr[i][j] = Integer.parseInt(stz.nextToken());
+    while(true){
+      StringTokenizer stz = new StringTokenizer(br.readLine());
+      n = Integer.parseInt(stz.nextToken());
+      if(n == 0 ) break;
+      arr = new int[n+1];
+      for(int i=0; i<n; i++){
+        arr[i] = Integer.parseInt(stz.nextToken());
       }
+      dfs(0,0);
+      sb.append("\n");
     }
-    for(int i=0; i<n; i++){
-      dfs(i,i);
-    }
-    for(int i=0; i<n; i++){
-      for(int j =0; j<n; j++){
-        System.out.print(answer[i][j]+" ");
-      }
-      System.out.println("");
-    }
+    System.out.print(sb);
   }
-  public static void dfs(int start, int num){
-    for(int i =0; i<n; i++){
-      int temp = arr[num][i];
-      if(temp == 1 && visited[i] == 0){
-        visited[i] =1;
-        answer[start][i] = 1;
-        dfs(start,i);
+  public static void dfs(int idx, int count){
+    if(count == 6){
+      for(int i=0; i<check.length; i++){
+        sb.append(check[i]).append(" ");
       }
+      sb.append("\n");
+      return;
     }
+    if(idx == n) return;
+    check[count] = arr[idx];
+    dfs(idx+1,count+1);
+    dfs(idx+1,count);
   }
 }
 ```
