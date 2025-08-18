@@ -1494,6 +1494,14 @@ public class Main{
       for(int i=0; i<n; i++){
         arr[i] = Integer.parseInt(stz.nextToken());
       }
+      List<String> list = new ArrayList<>(current.keySet());
+      Long s =11;
+      double d = 11;
+      
+      Math.ce
+//      Collection.sort(list);?
+      list.stream().map(l-> current.get(list)).toList()
+      list.stream.map(l-> current.get(list)).
       dfs(0,0);
       sb.append("\n");
     }
