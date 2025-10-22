@@ -2,7 +2,7 @@
 layout: post
 title: "Spring Cloud (1) "
 author: "jhkim593"
-tags: Spring
+tags: SpringBoot
 
 ---
 

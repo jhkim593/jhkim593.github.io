@@ -2,7 +2,7 @@
 layout: post
 title: "@Transactional 동작 원리"
 author: "jhkim593"
-tags: Spring
+tags: SpringBoot
 
 ---
 Spring에서 트랜잭션 처리를 위해 제공해주는 @Transactional을 프로젝트 진행하면서 자주 사용하는데 사용하다 보면 예상과 다르게 동작하는 부분이 많았습니다. 그래서 이번장에서는 @Transactional의 동작 원리에 대해 자세하게 확인해보도록 하겠습니다.

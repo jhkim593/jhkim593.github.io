@@ -2,7 +2,7 @@
 layout: post
 title: "JSON Schema를 이용한 요청 데이터 유효성 검증(2)"
 author: "jhkim593"
-tags: Spring
+tags: SpringBoot
 
 ---
 

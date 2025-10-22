@@ -173,7 +173,7 @@ public class Main{
 <br>
 
 <details>
-<summary><strong>가장 긴 짝수 연속한 부분 수열 (large)</strong></summary>
+<summary><strong>가장 긴 짝수 연속한 부분 수열 (large) </strong></summary>
 <div markdown="1">
 
 > [문제 링크](https://www.acmicpc.net/problem/22862)
@@ -182,7 +182,7 @@ public class Main{
 
 ### 난이도 : ⭐⭐
 
-- count는 현재 제거된 홀수 개수인데 count가 k이고 arr[end] (다음 숫자)가 홀수이면 더 이상 end를 늘리지 않고 start늘리도록함
+count는 현재 제거된 홀수 개수인데 count가 k이고 arr[end] (다음 숫자)가 홀수이면 더 이상 end를 늘리지 않고 start늘리도록함
 ### 코드
 ```java
 import java.util.*;

@@ -1459,3 +1459,69 @@ public class Main {
 </div>
 </details>
 
+
+
+<br>
+
+<details>
+<summary>로또</summary>
+<div markdown="1">
+
+> [문제 링크](https://www.acmicpc.net/submit/6603/97305097)
+
+<br>
+
+### 난이도 : ⭐⭐
+
+dfs를 통해 부분집함을 구해 해결
+### 코드
+```java
+import java.util.*;
+import java.io.*;
+
+public class Main{
+  static int n;
+  static int[] check = new int[6];
+  static StringBuilder sb = new StringBuilder();
+  static int[]arr;
+  public static void main(String[] args) throws Exception{
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    while(true){
+      StringTokenizer stz = new StringTokenizer(br.readLine());
+      n = Integer.parseInt(stz.nextToken());
+      if(n == 0 ) break;
+      arr = new int[n+1];
+      for(int i=0; i<n; i++){
+        arr[i] = Integer.parseInt(stz.nextToken());
+      }
+      List<String> list = new ArrayList<>(current.keySet());
+      Long s =11;
+      double d = 11;
+      
+      Math.ce
+//      Collection.sort(list);?
+      list.stream().map(l-> current.get(list)).toList()
+      list.stream.map(l-> current.get(list)).
+      dfs(0,0);
+      sb.append("\n");
+    }
+    System.out.print(sb);
+  }
+  public static void dfs(int idx, int count){
+    if(count == 6){
+      for(int i=0; i<check.length; i++){
+        sb.append(check[i]).append(" ");
+      }
+      sb.append("\n");
+      return;
+    }
+    if(idx == n) return;
+    check[count] = arr[idx];
+    dfs(idx+1,count+1);
+    dfs(idx+1,count);
+  }
+}
+```
+</div>
+</details>
+

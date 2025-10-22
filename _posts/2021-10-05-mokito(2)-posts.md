@@ -2,7 +2,7 @@
 layout: post
 title: "Mockito (2) - Stubbing"
 author: "jhkim593"
-tags: SpringBoot
+tags: TEST
 
 ---
 

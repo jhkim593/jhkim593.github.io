@@ -2,7 +2,7 @@
 layout: post
 title: "Factory Pattern 적용을 통한 if - else 구문 제거"
 author: "jhkim593"
-tags: Spring
+tags: SpringBoot
 ---
 ## 기존 문제
 

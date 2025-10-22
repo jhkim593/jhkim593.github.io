@@ -2,7 +2,7 @@
 layout: post
 title: "Mockito (1) - @Mock , @Spy , @InjectMocks"
 author: "jhkim593"
-tags: SpringBoot
+tags: TEST
 
 ---
 ## UnitTest(단위 테스트)
