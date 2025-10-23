@@ -391,4 +391,4 @@ implementation project(":common:outbox-polling")
 
 ---
 ## Reference
-https://microservices.io/patterns/data/transactional-outbox.html
+<https://microservices.io/patterns/data/transactional-outbox.html>
