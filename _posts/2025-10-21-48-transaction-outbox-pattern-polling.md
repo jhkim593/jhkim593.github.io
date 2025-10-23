@@ -386,3 +386,7 @@ public class EventUpdateService implements EventUpdater {
 ```
 implementation project(":common:outbox-polling")
 ```
+
+---
+## Reference
+https://microservices.io/patterns/data/transactional-outbox.html
