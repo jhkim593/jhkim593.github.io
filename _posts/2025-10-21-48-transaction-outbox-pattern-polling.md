@@ -126,9 +126,9 @@ Transaction Outbox Pattern에서 Outbox 테이블에 저장된 이벤트를 메�
 <img src="/assets/images/48/1.png"  width="700" height="250"/>
 
 **동작 흐름**
-- 비즈니스 엔티티 업데이트 (INSERT, UPDATE, DELETE)와 Outbox 테이블 이벤트 저장을 같은 트랜잭션에서 수행합니다.
-- 별도의 프로세스(Message Relay)가 주기적으로 Outbox 테이블을 폴링하여 발행되지 않은 이벤트를 조회합니다.
-- Message Relay는 읽어온 이벤트를 메세지 브로커에 발행합니다.
+1. 비즈니스 엔티티 업데이트 (INSERT, UPDATE, DELETE)와 Outbox 테이블 이벤트 저장을 같은 트랜잭션에서 수행합니다.
+2. 별도의 프로세스(Message Relay)가 주기적으로 Outbox 테이블을 폴링하여 발행되지 않은 이벤트를 조회합니다.
+3. Message Relay는 읽어온 이벤트를 메세지 브로커에 발행합니다.
 
 추가 인프라 구성이 없어 구현이 간단하다는 장점이 있지만 **폴링 주기에 따라 이벤트 발행 지연이 발생**할 수 있으며 주기적인 조회 쿼리로 **DB에 부하가 발생**할 수 있다는 단점이 있습니다.
 
