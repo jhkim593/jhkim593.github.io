@@ -57,7 +57,7 @@ Spring Boot의 기본 Redis 클라이언트인 Lettuce는 분산락을 제공하
 
 ## 코드 구현
 
-Redisson을 활용하여 Cache Stampede를 방지하는 코드를 구현해보겠습니다. 락 획득시 다른 스레드가 이미 캐시를 갱신했을 수 있으므로, 재확인 로직을 추가했습니다.
+Redisson을 활용하여 Cache Stampede를 방지하는 코드를 구현했습니다. 락 획득시 다른 스레드가 이미 캐시를 갱신했을 수 있으므로, 재확인 로직을 추가했습니다.
 
 ```java
 public Object process(String type, long ttlSeconds, Object[] args, Class<?> returnType,
