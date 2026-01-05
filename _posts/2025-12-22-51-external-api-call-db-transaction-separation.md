@@ -45,12 +45,12 @@ public class PaymentService {
 
     @Transactional
     public void processPayment(PaymentRequest request) {
-        // 1. 결제 데이터 저장 
+        // 1. 결제 데이터 저장
         Payment payment = Payment.create(request);
         paymentRepository.save(payment);
 
         // 2. 외부 API 호출
-        PaymentResponse response = paymentApi.requestPayment(request);
+        PaymentApiResponse apiResponse = paymentApi.requestPayment(request);
     }
 }
 ```
@@ -87,15 +87,17 @@ public class PaymentService {
    private final PaymentTransactionManager transactionManager;
    private final PaymentApi paymentApi;
 
-   public void processPayment(PaymentRequest request) {
+   public PaymentProcessResponse processPayment(PaymentRequest request) {
       // 1. 결제 데이터 저장
       Payment payment = transactionManager.createPayment(request);
 
-      // 2. 외부 API 호출 
-      PaymentResponse response = paymentApi.requestPayment(request);
+      // 2. 외부 API 호출
+      PaymentApiResponse apiResponse = paymentApi.requestPayment(request);
 
       // 3. 결제 데이터 업데이트
-      transactionManager.updatePayment(payment, response.getStatus());
+      transactionManager.updatePayment(payment, apiResponse.getStatus());
+
+      return PaymentProcessResponse.from(payment, apiResponse);
    }
 }
 ```
@@ -128,36 +130,53 @@ public class PaymentTransactionManager {
 
 또한 결제 데이터 업데이트 과정에서 예외가 던져진다면 결제는 성공했음에도 사용자는 결제 실패 응답을 받게 되는 문제도 있습니다.
 
-위와 같은 문제를 해결하기 위해 **비동기 처리와 주기적인 정합성 체크 로직을 추가**했습니다.
+위와 같은 문제를 해결하기 위해 **예외 처리를 통한 응답 반환과 주기적인 정합성 체크** 로직을 추가했습니다.
 
 <br>
 
-### 비동기 처리
+### 예외 처리를 통한 응답 반환
 
-결제 데이터 업데이트 과정은 예외가 발생하더라도 무시해야 하고 완료될 때까지 대기할 필요가 없기 때문에 비동기로 처리하도록 수정했습니다.
+결제 API가 성공했다면 결제 데이터 업데이트 실패 여부와 관계없이 사용자에게 성공 응답을 반환하도록했습니다.
+이를 위해 결제 API 호출과 데이터 업데이트를 분리하고, 업데이트 실패 시 예외가 발생하지 않도록 처리했습니다.
+
 ```java
-@Component
+@Service
 @RequiredArgsConstructor
-public class PaymentTransactionManager {
-   private final PaymentRepository paymentRepository;
-    
-   ...
-    
-   @Async
-   @Transactional
-   public void updatePayment(Payment payment, String status) {
-      payment.update(status);
-      paymentRepository.save(payment);
+public class PaymentService {
+   private final PaymentTransactionManager transactionManager;
+   private final PaymentApi paymentApi;
+
+   public PaymentProcessResponse processPayment(PaymentRequest request) {
+      // 1. 결제 데이터 저장
+      Payment payment = transactionManager.createPayment(request);
+
+      // 2. 외부 API 호출
+      PaymentApiResponse apiResponse = paymentApi.requestPayment(request);
+
+      // 3. 결제 데이터 업데이트
+      updatePayment(payment, apiResponse.getStatus());
+
+      return PaymentProcessResponse.from(payment, apiResponse);
+   }
+
+   private void updatePayment(Payment payment, String status) {
+      try {
+          transactionManager.updatePayment(payment, status);
+      } catch (Exception e) {
+          log.error("Failed to update payment status, paymentId={}", payment.getId(), e);
+      }
    }
 }
 ```
-`updatePayment` 메소드에 `@Async`를 추가했습니다. 
-이렇게 하면 결제 API 호출이 완료된 후 바로 사용자에게 응답을 반환하고, 결제 데이터 업데이트가 실패하더라도 사용자 응답에는 영향을 주지 않게 됩니다.
+
+결제 API가 성공하면 `updatePayment`를 호출하여 동기적으로 상태 업데이트를 시도합니다.
+만약 업데이트가 실패하더라도 사용자에게는 정상적으로 성공 응답을 반환합니다.
+
 
 <br>
 
 ### 주기적인 정합성 체크
-결제 데이터 업데이트가 실패하면 결제 API 결과와 DB 간 정합성이 깨질 수 있습니다.
+결제 데이터 업데이트가 실패하면 결제 API 결과와 DB 간 정합성이 깨지게 됩니다.
 이를 해결하기 위해 주기적으로 업데이트되지 않은 결제 건을 조회해서, 결제 조회 API로 실제 상태를 확인하고 DB에 반영하는 방식을 사용했습니다.
 
 ```java
@@ -185,7 +204,7 @@ public class PaymentRetryer {
     }
 
     private void updatePayment(Payment payment) {
-        PaymentResponse response = paymentApi.getPayment(payment.getId());
+        PaymentGetApiResponse response = paymentApi.getPayment(payment.getId());
         transactionManager.updatePayment(payment, response.getStatus());
     }
 }
@@ -202,13 +221,10 @@ public class PaymentRetryer {
 **1. 결제 요청**
 - 결제 사전 데이터를 DB에 저장합니다. (트랜잭션 1)
 - 결제 API를 호출합니다.
-- 결제 API 성공 시 즉시 사용자에게 성공 응답을 반환합니다.
+- 결제 API 호출 후 상태 업데이트를 시도합니다. (트랜잭션 2)
+- 상태 업데이트 성공 여부와 관계없이 사용자에게 성공 응답을 반환합니다.
 
-**2. 비동기 DB 업데이트**
-- 결제 데이터 업데이트가 비동기로 실행됩니다 (트랜잭션 2)
-- 업데이트가 실패하더라도 사용자 응답에는 영향을 주지 않습니다.
-
-**3. 주기적인 정합성 체크**
+**2. 주기적인 정합성 체크**
 - 10초마다 업데이트되지 않은 결제를 조회합니다.
 - 결제 조회 API로 실제 상태를 확인하여 DB에 반영합니다.
 
@@ -216,9 +232,9 @@ public class PaymentRetryer {
 
 ## 주의사항
 
-이 방식은 업데이트가 비동기로 이루어지기 때문에 **결제 API 결과와 DB 간 일시적인 불일치가 발생합니다.**
+이 방식은 상태 업데이트 실패 시 **결제 API 결과와 DB 간 일시적인 불일치가 발생하게 됩니다.**
 
-예를 들어 결제 API는 성공했지만, 업데이트가 아직 완료되지 않았거나 실패한 경우 일시적으로 업데이트 전 상태로 남아있게 됩니다. 이러한 불일치는 `PaymentRetryer`가 주기적으로 체크해 **최종적으로는 일치하도록 보장**하지만 일정 시간 동안 불일치가 발생합니다.
+예를 들어 결제 API는 성공했지만 상태 업데이트가 실패한 경우, 일시적으로 업데이트 전 상태로 남아있게 됩니다. 이러한 불일치는 `PaymentRetryer`가 주기적으로 체크해 **최종적으로는 일치하도록 보장**하지만, 일정 시간 동안 불일치가 발생합니다.
 
 
 
