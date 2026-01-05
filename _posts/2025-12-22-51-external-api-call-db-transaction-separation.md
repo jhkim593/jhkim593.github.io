@@ -24,17 +24,18 @@ tags: Architecture
 <br>
 
 ## API 호출 순서 결정
-결제 API 호출보다 결제 데이터를 먼저 DB에 저장하는 구조로 설계했는데 결제 API는 호출 이후 롤백이 쉽지 않기 때문입니다.
+결제 API 호출보다 결제 데이터를 먼저 DB에 저장하는 구조로 설계했는데 이유는 **결제 API는 호출 이후 롤백이 쉽지 않기 때문입니다.**
+
 만약 결제 API를 먼저 호출하고 이후에 DB에 저장하는 순서라면, DB 저장 실패 시 결제는 성공했지만 DB에는 반영되지 않는 상태 불일치가 발생하게 됩니다.
 
-이 경우 결제 취소 API를 호출하는 롤백 로직이 필요하지만, 롤백 로직 또한 실패할 수 있어 전체 흐름이 더 복잡해지는 문제가 있습니다.
-이러한 리스크를 줄이기 위해 결제와 관련 데이터를 먼저 DB에 저장한 뒤 결제 API를 호출하도록 설계했습니다.
+이 경우 결제 취소 API를 호출하는 롤백 로직이 필요하지만, 롤백 로직 또한 실패할 수 있어 전체 흐름이 더 복잡해지게 됩니다.
+이러한 리스크를 줄이기 위해 **결제 사전 데이터를 먼저 DB에 저장한 뒤 결제 API를 호출하도록 설계**했습니다.
 
 <br>
 
 ## 하나의 트랜잭션으로 처리
 
-처음에는 DB에 데이터를 미리 저장하고, 결제 API를 호출하는 방식으로 구현했습니다.
+처음에는 결제 API 성공을 가정하고 DB에 데이터를 미리 저장한 뒤, 결제 API를 호출하는 방식으로 구현했습니다.
 
 ```java
 @Service
@@ -44,13 +45,15 @@ public class PaymentService {
     private final PaymentApi paymentApi;
 
     @Transactional
-    public void processPayment(PaymentRequest request) {
+    public PaymentProcessResponse processPayment(PaymentRequest request) {
         // 1. 결제 데이터 저장
         Payment payment = Payment.create(request);
         paymentRepository.save(payment);
 
         // 2. 외부 API 호출
         PaymentApiResponse apiResponse = paymentApi.requestPayment(request);
+
+        return PaymentProcessResponse.from(payment, apiResponse);
     }
 }
 ```
@@ -60,7 +63,7 @@ public class PaymentService {
 
 
 이 방식은 정합성 측면에서 확실한 **장점**이 있습니다.
-- DB 저장이 실패하면 트랜잭션이 롤백되고 결제 API 호출을 하지 않습니다.
+- DB 저장이 실패하면 트랜잭션이 롤백되고 결제 API를 호출하지 않습니다.
 - 결제 API 호출이 실패하면 예외가 발생하여 DB에 저장된 데이터도 롤백됩니다.
 
 <br>
@@ -137,7 +140,6 @@ public class PaymentTransactionManager {
 ### 예외 처리를 통한 응답 반환
 
 결제 API가 성공했다면 결제 데이터 업데이트 실패 여부와 관계없이 사용자에게 성공 응답을 반환하도록했습니다.
-이를 위해 결제 API 호출과 데이터 업데이트를 분리하고, 업데이트 실패 시 예외가 발생하지 않도록 처리했습니다.
 
 ```java
 @Service
@@ -168,10 +170,8 @@ public class PaymentService {
    }
 }
 ```
-
-결제 API가 성공하면 `updatePayment`를 호출하여 동기적으로 상태 업데이트를 시도합니다.
-만약 업데이트가 실패하더라도 사용자에게는 정상적으로 성공 응답을 반환합니다.
-
+결제 API가 성공하면 `updatePayment`를 호출하여 상태 업데이트를 시도합니다.
+업데이트가 실패하더라도 사용자에게는 성공 응답을 반환하며, 발생할 수 있는 상태 불일치는 아래의 정합성 체크 로직으로 해결합니다.
 
 <br>
 
