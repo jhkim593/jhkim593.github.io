@@ -134,7 +134,7 @@ public class OrderEventConsumer {
 
 <br>
 
-####  RetryableTopic 글로벌 설정
+####  RetryableTopic 공통 설정
 
 여러 Consumer에 동일한 실패 처리 전략을 적용하고 싶을 때 `@RetryableTopic`을 각 Consumer마다 개별적으로 설정하는 것은 비효율적 일 수 있습니다. 이런 경우 글로벌 설정을 통해 모든 Consumer에 공통으로 적용할 수 있습니다.
 
