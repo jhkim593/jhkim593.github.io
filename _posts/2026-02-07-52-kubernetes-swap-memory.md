@@ -212,7 +212,7 @@ Instance Storage가 있는 인스턴스를 사용한다면, Swap 파일을 Insta
 
 <br>
 
-# 테스트 결과
+## 테스트 결과
 
 기존에 OOM이 발생하던 분석 작업에 Swap을 적용하여 테스트를 진행했습니다. Instance Storage는 사용하지 않고 EBS에 Swap을 설정했습니다.
 
