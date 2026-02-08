@@ -214,7 +214,7 @@ Instance Storage가 있는 인스턴스를 사용한다면, Swap 파일을 Insta
 
 ## 테스트 결과
 
-기존에 OOM이 발생하던 분석 작업에 Swap을 적용하여 테스트를 진행했습니다. Instance Storage는 사용하지 않고 EBS에 Swap을 설정했습니다.
+기존에 OOM이 발생하던 분석 작업에 Swap을 적용하여 테스트를 진행했습니다. 요금 정책상 Instance Storage는 사용하지 않고 EBS에 Swap을 설정했습니다.
 
 `system.memory.swap.used.bytes` 메트릭을 통해 물리 메모리 부족 시 Swap이 정상적으로 사용되는 것을 확인했으며, OOM 없이 작업이 정상 완료되었습니다.
 
@@ -226,3 +226,4 @@ Instance Storage가 있는 인스턴스를 사용한다면, Swap 파일을 Insta
 
 ## Reference
 <https://kubernetes.io/docs/concepts/cluster-administration/swap-memory-management/>
+<https://builder.aws.com/content/38j5cjxVTorJaNTu37HkPcDVcUs/how-to-enable-swap-memory-on-eks-using-karpenter>
