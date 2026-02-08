@@ -125,12 +125,19 @@ public class OrderEventConsumer {
     public void listen(String message) {
         ...
     }
+
+    @DltHandler
+    public void handleDlt(String message, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+        log.error("DLT 메시지 처리 - topic: {}, message: {}", topic, message);
+        // DB 저장, 알림 전송 등 후속 처리
+    }
 }
 ```
 - **attempts**: 재시도 횟수를 지정합니다. `attempts = "3"`은 원본 1회 + 재시도 2회를 의미합니다.
-- **backoff**: 재시도 간격을 설정합니다. `delay`는 초기 지연 시간, `multiplier`는 재시도마다 지연 시간을 증가시키는 배수를 의미합니다. 
+- **backoff**: 재시도 간격을 설정합니다. `delay`는 초기 지연 시간, `multiplier`는 재시도마다 지연 시간을 증가시키는 배수를 의미합니다.
 - **topicSuffixingStrategy**: retry 토픽의 네이밍 전략을 설정합니다. `SUFFIX_WITH_INDEX_VALUE`를 사용하면 `order-topic-retry-0`, `order-topic-retry-1` 형태로 retry 토픽이 생성됩니다.
 - **exclude**: 재시도하지 않고 즉시 DLT로 전송 할 예외를 지정합니다. `NoRetryableException`이 발생하면 재시도 없이 바로 DLT로 전송됩니다.
+- **@DltHandler**: `@RetryableTopic`이 적용된 Consumer와 같은 클래스에 위치해야 하며, 모든 재시도가 실패하여 DLT로 전송된 메시지를 처리합니다.
 
 <br>
 
@@ -150,10 +157,12 @@ public class KafkaRetryConfig {
                 .exponentialBackoff(3000, 2.0, 10000)
                 .notRetryOn(NoRetryableException.class)
                 .suffixTopicsWithIndexValues()
+                .dltHandlerMethod(new EndpointHandlerMethod(DltMessageHandler.class, "handleDltMessage"))
                 .create(template);
     }
 }
 ```
+- **dltHandlerMethod**: DLT 메시지를 처리할 클래스와 메서드를 지정합니다. `@DltHandler`를 각 Consumer마다 작성할 필요 없이 공통 DLT 처리 로직을 하나의 클래스로 관리할 수 있습니다.
 
 
 
