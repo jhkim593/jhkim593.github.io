@@ -77,12 +77,36 @@ eviction이 발생하기 전에 Swap을 사용하려면 `vm.min_free_kbytes` > `
 Swap은 디스크를 사용하기 때문에, Instance Storage(로컬 NVMe 디스크)를 사용하면 EBS보다 성능이 향상됩니다.
 하지만 Instance Storage를 지원하는 인스턴스 타입은 EBS만 지원하는 타입에 비해 비용이 더 발생합니다.
 
+요금 정책상 Instance Storage는 사용하지 않고 EBS를 사용했습니다.
+
+
+<br>
+
+## 설계 고려사항
+
+Swap 메모리를 적용하면서 안정적인 운영을 위해 다음과 같이 설계했습니다.
+
+<br>
+
+#### 노드 당 분석 파드 1개로 제한
+
+Swap 메모리 사용을 위해 limit을 여유롭게 설정했기 때문에, 하나의 노드에 여러 분석 파드가 배치되면 메모리를 두고 경쟁이 발생할 수 있습니다. 이를 방지하기 위해 **노드 당 분석 파드를 1개로 제한**했습니다. 
+
+이 방식은 새로운 분석 요청마다 새 노드를 프로비저닝해야 하므로 약 1분 30초의 대기 시간이 추가로 발생하지만, 안정적인 성능을 유지하는 것이 더 중요하다고 판단했습니다.
+
+<br>
+
+#### 데몬셋 파드는 Guaranteed로 설정
+
+분석 파드 외에 노드에서 동작하는 데몬셋 파드는 **QoS를 Guaranteed로 설정**했습니다.
+Guaranteed로 설정하면 Swap을 사용하지 않기 때문에, 분석 파드가 Swap을 사용하는 상황에서도 데몬셋 파드는 물리 메모리에서 안정적으로 동작하여 성능이 보장됩니다.
+
 <br>
 
 ## Swap 설정 코드
 
-Karpenter EC2NodeClass의 `userData`를 활용해 노드 시작 시 Swap을 구성하도록 설정했습니다. 
-
+Karpenter EC2NodeClass의 `userData`를 활용해 노드 시작 시 Swap을 구성하도록 설정했습니다.
+요금 정책상 Instance Storage는 사용하지 않고 EBS를 사용했습니다.
 ```yaml
   apiVersion: karpenter.k8s.aws/v1
   kind: EC2NodeClass
@@ -142,79 +166,12 @@ Karpenter EC2NodeClass의 `userData`를 활용해 노드 시작 시 Swap을 구�
 
 이를 통해 쿠버네티스는 **특정 컨테이너가 전체 Swap을 독점하는 것을 방지**합니다.
 
-<br>
-
-## Instance Storage에 Swap 설정 코드
-
-Instance Storage가 있는 인스턴스를 사용한다면, Swap 파일을 Instance Storage에 생성해 I/O 성능을 높일 수 있습니다.
-
-다만 Instance Storage는 RAID 마운트 이후에 사용 가능하기 때문에, systemd 서비스로 마운트 완료 후 Swap을 설정하도록 구성해야 합니다.
-
-```yaml
-  apiVersion: karpenter.k8s.aws/v1
-  kind: EC2NodeClass
-  spec:
-    amiSelectorTerms:
-      - alias: al2023@latest
-  instanceStorePolicy: RAID0
-  ...
-  userData: |
-      MIME-Version: 1.0
-      Content-Type: multipart/mixed; boundary="//"
-      
-      --//
-      Content-Type: text/x-shellscript; charset="us-ascii"
-      
-      #!/usr/bin/env bash
-      cat << 'EOF' > /etc/systemd/system/setup-swap.service
-      [Unit]
-      Description=Setup swap on instance storage
-      After=mnt-k8s\x2ddisks-0.mount
-      Before=kubelet.service
-      
-      [Service]
-      Type=oneshot
-      ExecStart=/usr/local/bin/setup-swap.sh
-      RemainAfterExit=yes
-      
-      [Install]
-      WantedBy=multi-user.target
-      EOF
-      
-      cat << 'EOF' > /usr/local/bin/setup-swap.sh
-      #!/bin/bash
-      if mountpoint -q /mnt/k8s-disks/0; then
-      SWAPFILE="/mnt/k8s-disks/0/swapfile"
-      else
-      SWAPFILE="/swapfile"
-      fi
-      
-      fallocate -l 30G "$SWAPFILE"
-      chmod 600 "$SWAPFILE"
-      mkswap "$SWAPFILE"
-      swapon "$SWAPFILE"
-      
-      sysctl -w vm.min_free_kbytes=204800
-      EOF
-      
-      chmod +x /usr/local/bin/setup-swap.sh
-      systemctl enable setup-swap.service
-
-```
-
-- `instanceStorePolicy: RAID0` : Instance Storage 디스크들을 RAID0으로 묶어 마운트
-- `setup-swap.service` : Swap 설정을 systemd 서비스로 등록해 노드 시작 시 자동 실행
-- `After=mnt-k8s\x2ddisks-0.mount` : Instance Storage RAID 마운트가 완료된 후 실행되도록 설정
-- `Before=kubelet.service` : kubelet이 시작되기 전에 Swap이 준비되도록 보장
-- `Type=oneshot` / `RemainAfterExit=yes` : 스크립트를 한 번 실행하고 서비스 상태를 활성으로 유지
-- `mountpoint -q /mnt/k8s-disks/0` : Instance Storage 마운트 여부를 확인해, 마운트되어 있으면 Instance Storage에, 실패하면 기본 EBS에 Swap을 생성하도록 fallback 처리
-- `systemctl enable setup-swap.service` : 노드 재시작 시에도 Swap 설정이 자동으로 적용되도록 서비스 등록
 
 <br>
 
 ## 테스트 결과
 
-기존에 OOM이 발생하던 분석 작업에 Swap을 적용하여 테스트를 진행했습니다. 요금 정책상 Instance Storage는 사용하지 않고 EBS에 Swap을 설정했습니다.
+기존에 OOM이 발생하던 분석 작업에 Swap을 적용하여 테스트를 진행했습니다.
 
 `system.memory.swap.used.bytes` 메트릭을 통해 물리 메모리 부족 시 Swap이 정상적으로 사용되는 것을 확인했으며, OOM 없이 작업이 정상 완료되었습니다.
 
