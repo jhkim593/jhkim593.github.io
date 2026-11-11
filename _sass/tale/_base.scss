@@ -36,6 +36,12 @@ h6 {
   line-height: normal;
 }
 
+strong,
+b {
+  color: #222;
+  font-weight: 700;
+}
+
 a {
   color: $blue;
   text-decoration: none;
