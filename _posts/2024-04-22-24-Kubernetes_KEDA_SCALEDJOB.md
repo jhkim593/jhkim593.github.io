@@ -57,6 +57,8 @@ Job은 파드가 종료되어야 완료되기 때문에, 분석 파드는 **분�
 - 분석이 끝나면 **COMPLETED** 상태가 됩니다. (분석은 15초 Sleep으로 대체했습니다.)
 - entrypoint.sh는 `/get/status` API로 상태를 확인하다가 COMPLETED가 되면 종료되고 Job이 완료됩니다.
 
+<br>
+
 entrypoint.sh 코드는 아래와 같습니다.
 
 ```bash
